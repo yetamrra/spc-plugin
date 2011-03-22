@@ -1,0 +1,16 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Helloworld
+Bundle-SymbolicName: com.example.helloworld; singleton:=true
+Bundle-Version: 1.0.0.qualifier
+Bundle-Activator: com.example.helloworld.Activator
+Bundle-Vendor: EXAMPLE
+Require-Bundle: org.eclipse.ui,
+ org.eclipse.core.runtime
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Bundle-ActivationPolicy: lazy
+Class-Path: /home/ben/Projects/sphinx/spinx4-1.0beta5/lib/WSJ_8gau_13dCep_16k_40mel_130Hz_6800Hz.jar
+Bundle-ClassPath: .,
+ lib/WSJ_8gau_13dCep_16k_40mel_130Hz_6800Hz.jar
+Import-Package: org.eclipse.jface.text,
+ org.eclipse.ui.texteditor
