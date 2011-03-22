@@ -10,10 +10,10 @@
 	<classpathentry kind="src" path="test"/>
 	<classpathentry kind="src" path="research"/>
 	<classpathentry kind="src" path="scripts"/>
-	<classpathentry kind="lib" path="/home/ben/Projects/sphinx/sphinx4-1.0beta5/lib/js.jar"/>
-	<classpathentry kind="lib" path="/home/ben/Projects/sphinx/sphinx4-1.0beta5/lib/jsapi.jar"/>
-	<classpathentry kind="lib" path="/home/ben/Projects/sphinx/sphinx4-1.0beta5/lib/tags.jar"/>
-	<classpathentry kind="lib" path="/home/ben/Projects/sphinx/sphinx4-1.0beta5/lib/sphinx4.jar"/>
-	<classpathentry kind="lib" path="/home/ben/Projects/sphinx/sphinx4-1.0beta5/lib/junit-4.8.1.jar"/>
+	<classpathentry kind="var" path="SPHINX_HOME/lib/js.jar"/>
+	<classpathentry kind="var" path="SPHINX_HOME/lib/jsapi.jar"/>
+	<classpathentry kind="var" path="SPHINX_HOME/lib/sphinx4.jar"/>
+	<classpathentry kind="var" path="SPHINX_HOME/lib/tags.jar"/>
+	<classpathentry kind="var" path="SPHINX_HOME/lib/junit-4.8.1.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
