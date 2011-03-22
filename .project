@@ -29,32 +29,38 @@
 		<link>
 			<name>apps</name>
 			<type>2</type>
-			<locationURI>PARENT-2-PROJECT_LOC/Projects/sphinx/sphinx4-1.0beta5/src/apps</locationURI>
+			<locationURI>SPHINX_HOME/src/apps</locationURI>
 		</link>
 		<link>
 			<name>jsapi</name>
 			<type>2</type>
-			<locationURI>PARENT-2-PROJECT_LOC/Projects/sphinx/sphinx4-1.0beta5/src/jsapi</locationURI>
+			<locationURI>SPHINX_HOME/src/jsapi</locationURI>
 		</link>
 		<link>
 			<name>research</name>
 			<type>2</type>
-			<locationURI>PARENT-2-PROJECT_LOC/Projects/sphinx/sphinx4-1.0beta5/src/research</locationURI>
+			<locationURI>SPHINX_HOME/src/research</locationURI>
 		</link>
 		<link>
 			<name>scripts</name>
 			<type>2</type>
-			<locationURI>PARENT-2-PROJECT_LOC/Projects/sphinx/sphinx4-1.0beta5/src/scripts</locationURI>
+			<locationURI>SPHINX_HOME/src/scripts</locationURI>
 		</link>
 		<link>
 			<name>sphinx4</name>
 			<type>2</type>
-			<locationURI>PARENT-2-PROJECT_LOC/Projects/sphinx/sphinx4-1.0beta5/src/sphinx4</locationURI>
+			<locationURI>SPHINX_HOME/src/sphinx4</locationURI>
 		</link>
 		<link>
 			<name>test</name>
 			<type>2</type>
-			<locationURI>PARENT-2-PROJECT_LOC/Projects/sphinx/sphinx4-1.0beta5/src/test</locationURI>
+			<locationURI>SPHINX_HOME/src/test</locationURI>
 		</link>
 	</linkedResources>
+	<variableList>
+		<variable>
+			<name>SPHINX_HOME</name>
+			<value>file:/Users/ben/Projects/sphinx/sphinx4-1.0beta5</value>
+		</variable>
+	</variableList>
 </projectDescription>
