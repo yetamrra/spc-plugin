@@ -57,10 +57,4 @@
 			<locationURI>SPHINX_HOME/src/test</locationURI>
 		</link>
 	</linkedResources>
-	<variableList>
-		<variable>
-			<name>SPHINX_HOME</name>
-			<value>file:/Users/ben/Projects/sphinx/sphinx4-1.0beta5</value>
-		</variable>
-	</variableList>
 </projectDescription>
