@@ -29,7 +29,7 @@ public class SpeechListener implements Runnable {
 	{
         ConfigurationManager cm;
 
-        cm = new ConfigurationManager( "/home/ben/workspace/com.example.helloworld/helloworld.config.xml" /*HelloWorld.class.getResource("helloworld.config.xml")*/ );
+        cm = new ConfigurationManager( System.getenv("HOME") + "/workspace/com.example.helloworld/helloworld.config.xml" /*HelloWorld.class.getResource("helloworld.config.xml")*/ );
 
         System.out.println( "Here ");
         

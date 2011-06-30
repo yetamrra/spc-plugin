@@ -10,9 +10,6 @@ public <statement> = ( <greet> | <assignment> );
 
 <greet> = (Good morning | Hello | Goodbye ) ( Bhiksha | Evandro | Paul | Philip | Rita | Will | George );
 
-<assignment> = Set X to five;
-
-/*
 <assignment> = Set <id> to <expression>;
 
 <expression> = <number>;
@@ -20,4 +17,3 @@ public <statement> = ( <greet> | <assignment> );
 <number> = one | two | three | four | five | six | seven | eight | nine | ten;
 
 <id> = X;
-*/
