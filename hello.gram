@@ -6,4 +6,18 @@
 
 grammar hello;
 
-public <greet> = (Good morning | Hello | Goodbye ) ( Bhiksha | Evandro | Paul | Philip | Rita | Will | George );
+public <statement> = ( <greet> | <assignment> );
+
+<greet> = (Good morning | Hello | Goodbye ) ( Bhiksha | Evandro | Paul | Philip | Rita | Will | George );
+
+<assignment> = Set X to five;
+
+/*
+<assignment> = Set <id> to <expression>;
+
+<expression> = <number>;
+
+<number> = one | two | three | four | five | six | seven | eight | nine | ten;
+
+<id> = X;
+*/
