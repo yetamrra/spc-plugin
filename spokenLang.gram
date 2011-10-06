@@ -6,14 +6,20 @@
 
 grammar hello;
 
-public <statement> = ( <greet> | <assignment> );
+public <program> = <function>;
+
+<statement> = ( <assignment> | <print> );
 
 <greet> = (Good morning | Hello | Goodbye ) ( Bhiksha | Evandro | Paul | Philip | Rita | Will | George );
 
 <assignment> = Set <id> to <expression>;
 
-<expression> = <number>;
+<expression> = <number> | <id>;
 
 <number> = one | two | three | four | five | six | seven | eight | nine | ten;
 
 <id> = X;
+
+<print> = print <expression>;
+
+<function> = define function <id> taking no arguments as <statement> end function;
