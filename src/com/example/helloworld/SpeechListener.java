@@ -5,19 +5,21 @@ import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.ITextSelection;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IEditorPart;
-import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchWindow;
-import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.texteditor.AbstractTextEditor;
 import org.eclipse.ui.texteditor.IDocumentProvider;
 import org.eclipse.ui.texteditor.ITextEditor;
+
+import edu.cmu.sphinx.decoder.ResultListener;
 import edu.cmu.sphinx.frontend.util.Microphone;
 import edu.cmu.sphinx.recognizer.Recognizer;
 import edu.cmu.sphinx.result.Result;
 import edu.cmu.sphinx.util.props.ConfigurationManager;
+import edu.cmu.sphinx.util.props.PropertyException;
+import edu.cmu.sphinx.util.props.PropertySheet;
 
-public class SpeechListener implements Runnable {
+public class SpeechListener implements Runnable, ResultListener {
 	private IWorkbenchWindow window;
 
 	public SpeechListener( IWorkbenchWindow w )
@@ -35,16 +37,22 @@ public class SpeechListener implements Runnable {
         
         Recognizer recognizer = (Recognizer) cm.lookup("recognizer");
         recognizer.allocate();
+        recognizer.addResultListener( this );
 
         System.out.println( "Here2");
 
-        // start the microphone or exit if the programm if this is not possible
+        // start the microphone or exit if the program if this is not possible
         Microphone microphone = (Microphone) cm.lookup("microphone");
         if (!microphone.startRecording()) {
             System.out.println("Cannot start microphone.");
             recognizer.deallocate();
             System.exit(1);
         }
+
+		//MessageDialog.openInformation(
+		//		window.getShell(),
+		//		"Listener is ready",
+		//		"Begin speaking");
 
         System.out.println("Say: (Good morning | Hello) ( Bhiksha | Evandro | Paul | Philip | Rita | Will )");
 
@@ -60,7 +68,7 @@ public class SpeechListener implements Runnable {
                 insertText( window, resultText );
 
 
-                //System.out.println("You said: " + resultText + '\n');
+                System.out.println("You said: " + resultText + '\n');
             } else {
                 System.out.println("I can't hear what you said.\n");
             }
@@ -91,5 +99,19 @@ public class SpeechListener implements Runnable {
         			}
         	 }
         });
+	}
+
+	@Override
+	public void newProperties(PropertySheet ps) throws PropertyException {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void newResult(Result result) {
+		String text = result.getBestResultNoFiller(); 
+		
+		System.out.println( "Hypothesis: " + text );
+		
 	}
 }

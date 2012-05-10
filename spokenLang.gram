@@ -6,8 +6,18 @@
 
 grammar hello;
 
-public <program> = <function>;
+public <program> = <fragments>+;
 
+<fragments> = <funcFrags>
+			| <statement>
+			;
+
+<funcFrags> = define function <id>
+            | taking no arguments as
+            | taking arguments as
+            | end function
+            ;
+            
 <statement> = ( <assignment> | <print> );
 
 <greet> = (Good morning | Hello | Goodbye ) ( Bhiksha | Evandro | Paul | Philip | Rita | Will | George );
@@ -18,7 +28,7 @@ public <program> = <function>;
 
 <number> = one | two | three | four | five | six | seven | eight | nine | ten;
 
-<id> = X;
+<id> = X | Y | Z | main;
 
 <print> = print <expression>;
 

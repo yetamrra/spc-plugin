@@ -4,7 +4,7 @@ import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.IWorkbenchWindowActionDelegate;
-import org.eclipse.jface.dialogs.MessageDialog;
+
 import com.example.helloworld.SpeechListener;
 
 /**
@@ -30,11 +30,6 @@ public class SampleAction implements IWorkbenchWindowActionDelegate {
 	 * @see IWorkbenchWindowActionDelegate#run
 	 */
 	public void run(IAction action) {
-		MessageDialog.openInformation(
-			window.getShell(),
-			"Helloworld",
-			"Hello, Eclipse world");
-
 		SpeechListener l = new SpeechListener( window );
 		Thread t = new Thread( l );
 		t.start();
