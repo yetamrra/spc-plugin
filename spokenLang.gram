@@ -9,20 +9,48 @@ grammar hello;
 public <program> = <fragments>+;
 
 <fragments> = <funcFrags>
-			| <statement>
+			| <whileFrags>
+			| <assignment>
+			| <printFrags>
+			| <callFrags>
+			| <ifFrags>
 			;
 
 <funcFrags> = define function <id>
             | taking no arguments as
             | taking arguments as
             | end function
+            | return <expression>
             ;
-            
+
+<assignment> = Set <id> to <expression>;
+
+<whileFrags> = while <boolExpr> do
+			 | end while
+			 ;
+
+<printFrags> = print <expression>
+             | new line
+             ;
+             
+<callFrags> = call <id>
+			| the result of calling <id>
+            | with <expression> (and <expression)*
+            ;
+
+<ifFrags> = if <boolExpr> then
+          | else
+          | end if
+          ;
+
+<boolExpr> = <expression> <boolop> <expression> ;
+
+<boolop> = less than | greater than | equals | not equals
+
 <statement> = ( <assignment> | <print> );
 
 <greet> = (Good morning | Hello | Goodbye ) ( Bhiksha | Evandro | Paul | Philip | Rita | Will | George );
 
-<assignment> = Set <id> to <expression>;
 
 <expression> = <number> | <id>;
 
