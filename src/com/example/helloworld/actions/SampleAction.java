@@ -61,7 +61,8 @@ public class SampleAction implements IWorkbenchWindowActionDelegate {
 	/**
 	 * We will cache window object in order to
 	 * be able to provide parent shell for the message dialog.
-	 * @see IWorkbenchWindowActionDelegate#init
+	 *
+@see IWorkbenchWindowActionDelegate#init
 	 */
 	public void init(IWorkbenchWindow window) {
 		this.window = window;

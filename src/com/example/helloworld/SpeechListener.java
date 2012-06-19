@@ -1,5 +1,13 @@
 package com.example.helloworld;
 
+import java.io.IOException;
+import java.net.URL;
+
+import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.core.runtime.FileLocator;
+import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.Platform;
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.ITextSelection;
@@ -27,9 +35,18 @@ public class SpeechListener implements Runnable {
 	
 	public void run()
 	{
-        ConfigurationManager cm;
-
-        cm = new ConfigurationManager( System.getenv("HOME") + "/workspace/com.example.helloworld/helloworld.config.xml" /*HelloWorld.class.getResource("helloworld.config.xml")*/ );
+		URL cfgPath;
+		
+		try {
+			URL cfgURL = Platform.getBundle( Activator.PLUGIN_ID ).getEntry("lib/helloworld.config.xml");
+			cfgPath = FileLocator.toFileURL( cfgURL );
+		}
+		catch ( IOException e ) {
+			System.out.println( "Cannot find helloworld.config.xml: " + e.getMessage() );
+			return;
+		}
+        
+        ConfigurationManager cm = new ConfigurationManager( cfgPath );
 
         System.out.println( "Here ");
         
