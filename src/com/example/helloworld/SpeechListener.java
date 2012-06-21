@@ -3,11 +3,9 @@ package com.example.helloworld;
 import java.io.IOException;
 import java.net.URL;
 
-import org.eclipse.core.resources.IProject;
-import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.FileLocator;
-import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Platform;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.ITextSelection;
@@ -50,13 +48,9 @@ public class SpeechListener implements Runnable, ResultListener {
         
         ConfigurationManager cm = new ConfigurationManager( cfgPath );
 
-        System.out.println( "Here ");
-        
         Recognizer recognizer = (Recognizer) cm.lookup("recognizer");
         recognizer.allocate();
         recognizer.addResultListener( this );
-
-        System.out.println( "Here2");
 
         // start the microphone or exit if the program if this is not possible
         Microphone microphone = (Microphone) cm.lookup("microphone");
@@ -66,14 +60,25 @@ public class SpeechListener implements Runnable, ResultListener {
             System.exit(1);
         }
 
+        Display.getDefault().asyncExec( new Runnable() {
+        	public void run() {
+        		MessageDialog.openInformation(
+        			window.getShell(),
+        			"Listener is ready",
+        			"Begin speaking"
+        		);
+        	}
+        }
+        );
+        
 		//MessageDialog.openInformation(
 		//		window.getShell(),
 		//		"Listener is ready",
 		//		"Begin speaking");
 
-        System.out.println("Say: (Good morning | Hello) ( Bhiksha | Evandro | Paul | Philip | Rita | Will )");
+        //System.out.println("Say: (Good morning | Hello) ( Bhiksha | Evandro | Paul | Philip | Rita | Will )");
 
-        // loop the recognition until the programm exits.
+        // loop the recognition until the program exits.
         while (true) {
             System.out.println("Start speaking. Press Ctrl-C to quit.\n");
 
@@ -94,6 +99,29 @@ public class SpeechListener implements Runnable, ResultListener {
 
 	private static void insertText( final IWorkbenchWindow window, final String resultText )
 	{
+		if ( resultText.length() == 0 ) {
+			return;
+		}
+		
+		String tmp = resultText;
+		tmp = tmp.replaceAll( "\\bzero\\b", "0" );
+		tmp = tmp.replaceAll( "\\bone\\b", "1" );
+		tmp = tmp.replaceAll( "\\btwo\\b", "2" );
+		tmp = tmp.replaceAll( "\\bthree\\b", "3" );
+		tmp = tmp.replaceAll( "\\bfour\\b", "4" );
+		tmp = tmp.replaceAll( "\\bfive\\b", "5" );
+		tmp = tmp.replaceAll( "\\bsix\\b", "6" );
+		tmp = tmp.replaceAll( "\\bseven\\b", "7" );
+		tmp = tmp.replaceAll( "\\beight\\b", "8" );
+		tmp = tmp.replaceAll( "\\bnine\\b", "9" );
+		tmp = tmp.replaceAll( "\\bten\\b", "10" );
+		tmp = tmp.replaceAll( "\\bless than\\b", "<" );
+		tmp = tmp.replaceAll( "\\bgreater than\\b", ">" );
+		tmp = tmp.replaceAll( "\\bnot equals\\b", "!=" );
+		tmp = tmp.replaceAll( "\\bequals\\b", "=" );
+		
+		final String insertText = tmp + " \n";
+		
         //IWorkbench wb = PlatformUI.getWorkbench();
         //IWorkbenchWindow win = wb.getActiveWorkbenchWindow();
         Display.getDefault().asyncExec(new Runnable() {
@@ -109,7 +137,9 @@ public class SpeechListener implements Runnable, ResultListener {
         	        	(ITextSelection) editor.getSelectionProvider().getSelection();
         			try {
         				int offset = selection.getOffset(); //doc.getLineOffset(doc.getNumberOfLines()-4);
-        	            doc.replace(offset, 0, resultText+"\n");
+        	            doc.replace(offset, 0, insertText);
+        	            editor.selectAndReveal( offset+insertText.length(), 0 );
+        	            //editor.setHighlightRange( offset+insertText.length(), 0, true );
         			} catch (BadLocationException e) {
         				// TODO Auto-generated catch block
         				e.printStackTrace();

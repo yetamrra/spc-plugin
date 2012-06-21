@@ -18,7 +18,7 @@ public <program> = <fragments>+;
 
 <funcFrags> = define function <id>
             | taking no arguments as
-            | taking arguments as
+            | taking arguments <id> (and <id>)* as
             | end function
             | return <expression>
             ;
@@ -34,8 +34,14 @@ public <program> = <fragments>+;
              ;
              
 <callFrags> = call <id>
-			| the result of calling <id>
-            | with <expression> (and <expression)*
+			| <withFrags>
+			;
+			
+<callExprFrags> = the result of calling <id>
+                | <withFrags>
+                ;
+            
+<withFrags> = with <expression> (and <expression>)*
             ;
 
 <ifFrags> = if <boolExpr> then
@@ -45,19 +51,17 @@ public <program> = <fragments>+;
 
 <boolExpr> = <expression> <boolop> <expression> ;
 
-<boolop> = less than | greater than | equals | not equals
+<boolop> = less than | greater than | equals | not equals ;
 
 <statement> = ( <assignment> | <print> );
 
 <greet> = (Good morning | Hello | Goodbye ) ( Bhiksha | Evandro | Paul | Philip | Rita | Will | George );
 
 
-<expression> = <number> | <id>;
+<expression> = <number> | <id> | <callExprFrags>;
 
-<number> = one | two | three | four | five | six | seven | eight | nine | ten;
+<number> = zero | one | two | three | four | five | six | seven | eight | nine | ten;
 
-<id> = X | Y | Z | main;
+<id> = X | Y | Z | A | B | C | F | G | M | N | main;
 
 <print> = print <expression>;
-
-<function> = define function <id> taking no arguments as <statement> end function;

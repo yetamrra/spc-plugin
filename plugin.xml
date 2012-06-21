@@ -9,7 +9,7 @@
             visible="true"
             id="com.example.helloworld.actionSet">
          <menu
-               label="Sample &amp;Menu"
+               label="Spoken &amp;LanguageMenu"
                id="sampleMenu">
             <separator
                   name="sampleGroup">
@@ -25,6 +25,17 @@
                id="com.example.helloworld.actions.SampleAction">
          </action>
       </actionSet>
+   </extension>
+   <extension point="org.eclipse.ui.commands">
+   		<category
+   			name="Spoken Compiler"
+   			description="Commands related to the spoken compiler"
+   			id="com.example.helloworld.commands.category" />
+   		<command
+   			categoryId="com.example.helloworld.commands.category"
+   			name="Compile"
+   			description="Compile the current file"
+   			id="com.example.helloworld.commands.compile" />
    </extension>
 
 </plugin>
