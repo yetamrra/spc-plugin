@@ -37,5 +37,23 @@
    			description="Compile the current file"
    			id="com.example.helloworld.commands.compile" />
    </extension>
-
+   <extension
+      id="SpokenBuilder" name="Spoken Compiler Builder" point="org.eclipse.core.resources.builders">
+      <builder hasNature="true">
+         <run 
+            class="com.example.helloworld.builders.SpokenBuilder">
+            <parameter name="optimize" value="true" />
+            <parameter name="comment" value="Builder comment" />
+         </run>
+      </builder>
+   </extension>
+   <extension
+      id="SpokenBuilderNature"
+      name="Spoken Compiler Builder"
+      point="org.eclipse.core.resources.natures">
+      <builder id="com.example.helloworld.SpokenBuilder" />
+      <runtime>
+         <run class="com.example.helloworld.builders.SpokenBuilderNature" />
+      </runtime>
+   </extension>
 </plugin>

@@ -55,9 +55,6 @@ public <program> = <fragments>+;
 
 <statement> = ( <assignment> | <print> );
 
-<greet> = (Good morning | Hello | Goodbye ) ( Bhiksha | Evandro | Paul | Philip | Rita | Will | George );
-
-
 <expression> = <number> | <id> | <callExprFrags>;
 
 <number> = zero | one | two | three | four | five | six | seven | eight | nine | ten;
