@@ -35,7 +35,7 @@ public class SpokenBuilder extends IncrementalProjectBuilder
 			for ( int i=0; i<children.length; i++ ) {
 				IResourceDelta child = children[i];
 				String fileName = child.getFullPath().getFileExtension();
-				if ( fileName.matches("\\.spk$") ) {
+				if ( fileName.equals("spk") ) {
 					files.add( child.getFullPath() );
 				}
 			}
