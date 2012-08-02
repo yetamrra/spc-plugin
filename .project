@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <projectDescription>
-	<name>com.example.helloworld</name>
+	<name>EclipsePlugin</name>
 	<comment></comment>
 	<projects>
 	</projects>
@@ -45,6 +45,11 @@
 			<name>scripts</name>
 			<type>2</type>
 			<locationURI>SPHINX_HOME/src/scripts</locationURI>
+		</link>
+		<link>
+			<name>spc</name>
+			<type>2</type>
+			<location>/Users/ben/Documents/Classes/Dissertation/workspace/grammar/src</location>
 		</link>
 		<link>
 			<name>sphinx4</name>

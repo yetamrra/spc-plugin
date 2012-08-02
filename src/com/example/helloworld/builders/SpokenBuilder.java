@@ -1,12 +1,13 @@
 package com.example.helloworld.builders;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
+import org.bxg.spokencompiler.SpokenCompiler;
 import org.eclipse.core.resources.ICommand;
-import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IProjectDescription;
 import org.eclipse.core.resources.IResourceDelta;
@@ -24,7 +25,7 @@ public class SpokenBuilder extends IncrementalProjectBuilder
 	public static final String BUILDER_ID = Activator.PLUGIN_ID + ".SpokenBuilder";
 	
 	@Override
-	protected IProject[] build(int kind, Map args, IProgressMonitor progress)
+	protected IProject[] build(int kind, @SuppressWarnings("rawtypes") Map args, IProgressMonitor progress)
 			throws CoreException 
 	{
 		List<IPath> files = new ArrayList<IPath>();
@@ -35,7 +36,7 @@ public class SpokenBuilder extends IncrementalProjectBuilder
 			for ( int i=0; i<children.length; i++ ) {
 				IResourceDelta child = children[i];
 				String fileName = child.getFullPath().getFileExtension();
-				if ( fileName.equals("spk") ) {
+				if ( fileName != null && fileName.equals("spk") ) {
 					files.add( child.getFullPath() );
 				}
 			}
@@ -60,6 +61,8 @@ public class SpokenBuilder extends IncrementalProjectBuilder
     
     private void buildSpokenFiles( List<IPath> files, IProgressMonitor monitor )
     {
+		SpokenCompiler spc = new SpokenCompiler();
+
     	for ( IPath file: files ) {
     		monitor.beginTask( "Compiling " + file, 1 );
     		
@@ -67,7 +70,20 @@ public class SpokenBuilder extends IncrementalProjectBuilder
     			return;
     		}
     		
-    		System.out.println( "Compiled " + file );
+    		boolean success = false;
+    		try {
+    			spc.compileFile( file.toOSString(), "StringTemplates.stg" );
+    			success = true;
+    		}
+    		catch ( IOException e ) {
+    			System.out.println( "Error compiling " + file + ": " + e.getMessage() );
+    		}
+    		
+    		if ( !success ) {
+    			System.out.println( "Build failed for " + file );
+    		} else {
+    			System.out.println( "Compiled " + file );
+    		}
     		monitor.worked( 1 );
     		
     		monitor.done();
@@ -141,6 +157,6 @@ public class SpokenBuilder extends IncrementalProjectBuilder
     		// FIXME: log error e
     		return;
     	}
-
+    	description.toString();
     }
 }
