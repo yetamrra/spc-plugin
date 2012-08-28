@@ -15,13 +15,23 @@
             </separator>
          </menu>
          <action
-               label="&amp;Sample Action"
+               label="&amp;Start Dictation"
                icon="icons/sample.gif"
                class="com.example.helloworld.actions.SampleAction"
-               tooltip="Hello, Eclipse world"
+               tooltip="Start Speech Listener"
                menubarPath="sampleMenu/sampleGroup"
                toolbarPath="sampleGroup"
                id="com.example.helloworld.actions.SampleAction">
+         </action>
+         <action
+               label="&amp;Process Audio File"
+               icon="icons/sample.gif"
+               class="com.example.helloworld.actions.ProcessAudioFile"
+               tooltip="Process the selected audio file"
+               menubarPath="sampleMenu/sampleGroup"
+               toolbarPath="sampleGroup"
+               id="com.example.helloworld.actions.ProcessAudioFile"
+               enablesFor="1">
          </action>
       </actionSet>
    </extension>

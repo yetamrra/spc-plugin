@@ -30,7 +30,7 @@ public class SampleAction implements IWorkbenchWindowActionDelegate {
 	 * @see IWorkbenchWindowActionDelegate#run
 	 */
 	public void run(IAction action) {
-		SpeechListener l = new SpeechListener( window );
+		SpeechListener l = new SpeechListener( window, "helloworld.config.xml" );
 		Thread t = new Thread( l );
 		t.start();
 	}

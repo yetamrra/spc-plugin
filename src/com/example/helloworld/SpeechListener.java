@@ -18,6 +18,7 @@ import org.eclipse.ui.texteditor.IDocumentProvider;
 import org.eclipse.ui.texteditor.ITextEditor;
 
 import edu.cmu.sphinx.decoder.ResultListener;
+import edu.cmu.sphinx.frontend.util.AudioFileDataSource;
 import edu.cmu.sphinx.frontend.util.Microphone;
 import edu.cmu.sphinx.recognizer.Recognizer;
 import edu.cmu.sphinx.result.Result;
@@ -27,10 +28,14 @@ import edu.cmu.sphinx.util.props.PropertySheet;
 
 public class SpeechListener implements Runnable, ResultListener {
 	private IWorkbenchWindow window;
+	private String configFile;
+	private URL audioURL;
 
-	public SpeechListener( IWorkbenchWindow w )
+	public SpeechListener( IWorkbenchWindow w, String config )
 	{
 		this.window = w;
+		this.configFile = config;
+		this.setAudioURL(null);
 	}
 	
 	public void run()
@@ -38,11 +43,12 @@ public class SpeechListener implements Runnable, ResultListener {
 		URL cfgPath;
 		
 		try {
-			URL cfgURL = Platform.getBundle( Activator.PLUGIN_ID ).getEntry("lib/helloworld.config.xml");
+			String filePath = "lib/" + configFile;
+			URL cfgURL = Platform.getBundle( Activator.PLUGIN_ID ).getEntry(filePath);
 			cfgPath = FileLocator.toFileURL( cfgURL );
 		}
 		catch ( IOException e ) {
-			System.out.println( "Cannot find helloworld.config.xml: " + e.getMessage() );
+			System.out.println( "Cannot find " + configFile + ": " + e.getMessage() );
 			return;
 		}
         
@@ -54,23 +60,31 @@ public class SpeechListener implements Runnable, ResultListener {
 
         // start the microphone or exit if the program if this is not possible
         Microphone microphone = (Microphone) cm.lookup("microphone");
-        if (!microphone.startRecording()) {
+        boolean loop = microphone != null;
+        if (microphone != null && !microphone.startRecording()) {
             System.out.println("Cannot start microphone.");
             recognizer.deallocate();
             System.exit(1);
         }
 
-        Display.getDefault().asyncExec( new Runnable() {
-        	public void run() {
-        		MessageDialog.openInformation(
-        			window.getShell(),
-        			"Listener is ready",
-        			"Begin speaking"
-        		);
-        	}
+        // configure the audio input for the recognizer if we
+        // have an audio file set
+        if ( this.audioURL != null ) {
+        	AudioFileDataSource dataSource = (AudioFileDataSource) cm.lookup("audioFileDataSource");
+        	dataSource.setAudioFile(audioURL, null);
         }
-        );
-        
+
+//        Display.getDefault().asyncExec( new Runnable() {
+//        	public void run() {
+//        		MessageDialog.openInformation(
+//        			window.getShell(),
+//        			"Listener is ready",
+//        			"Begin speaking"
+//        		);
+//        	}
+//        }
+//        );
+//        
 		//MessageDialog.openInformation(
 		//		window.getShell(),
 		//		"Listener is ready",
@@ -80,21 +94,32 @@ public class SpeechListener implements Runnable, ResultListener {
 
         // loop the recognition until the program exits.
         while (true) {
-            System.out.println("Start speaking. Press Ctrl-C to quit.\n");
+        	if ( loop ) { 
+        		System.out.println("Start speaking. Press Ctrl-C to quit.\n");
+        	} else {
+        		System.out.println("Starting recognition from audio file");
+        	}
 
             Result result = recognizer.recognize();
 
             if (result != null) {
-                String resultText = result.getBestFinalResultNoFiller();
+            	// String resultText = result.getBestFinalResultNoFiller();
+            	String resultText = result.getBestResultNoFiller();
 
                 insertText( window, resultText );
 
 
                 System.out.println("You said: " + resultText + '\n');
             } else {
-                System.out.println("I can't hear what you said.\n");
+            	if ( !loop ) {
+            		break;
+            	} else {
+            		System.out.println("I can't hear what you said.\n");
+            	}
             }
         }
+        
+        System.out.println("No more utterances.  Closingr recognizer.");
 	}
 
 	private static void insertText( final IWorkbenchWindow window, final String resultText )
@@ -160,5 +185,13 @@ public class SpeechListener implements Runnable, ResultListener {
 		
 		System.out.println( "Hypothesis: " + text );
 		
+	}
+
+	public URL getAudioURL() {
+		return audioURL;
+	}
+
+	public void setAudioURL(URL audioURL) {
+		this.audioURL = audioURL;
 	}
 }
