@@ -5,7 +5,6 @@ import java.net.URL;
 
 import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.Platform;
-import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.ITextSelection;
@@ -20,6 +19,8 @@ import org.eclipse.ui.texteditor.ITextEditor;
 import edu.cmu.sphinx.decoder.ResultListener;
 import edu.cmu.sphinx.frontend.util.AudioFileDataSource;
 import edu.cmu.sphinx.frontend.util.Microphone;
+import edu.cmu.sphinx.jsgf.JSGFGrammarException;
+import edu.cmu.sphinx.jsgf.JSGFGrammarParseException;
 import edu.cmu.sphinx.recognizer.Recognizer;
 import edu.cmu.sphinx.result.Result;
 import edu.cmu.sphinx.util.props.ConfigurationManager;
@@ -30,18 +31,17 @@ public class SpeechListener implements Runnable, ResultListener {
 	private IWorkbenchWindow window;
 	private String configFile;
 	private URL audioURL;
+	private ConfigurationManager configManager;
+	private Recognizer recognizer;
+	private DialogManager dialogManager;
 
 	public SpeechListener( IWorkbenchWindow w, String config )
 	{
 		this.window = w;
 		this.configFile = config;
 		this.setAudioURL(null);
-	}
-	
-	public void run()
-	{
-		URL cfgPath;
 		
+		URL cfgPath;
 		try {
 			String filePath = "lib/" + configFile;
 			URL cfgURL = Platform.getBundle( Activator.PLUGIN_ID ).getEntry(filePath);
@@ -51,15 +51,40 @@ public class SpeechListener implements Runnable, ResultListener {
 			System.out.println( "Cannot find " + configFile + ": " + e.getMessage() );
 			return;
 		}
+
+		configManager = new ConfigurationManager( cfgPath );
+
+        dialogManager = (DialogManager)configManager.lookup("dialogManager");
+
+        dialogManager.addNode( "top", new SLBehavior() );
         
-        ConfigurationManager cm = new ConfigurationManager( cfgPath );
+        dialogManager.setInitialNode("top");
+        
+        //recognizer = (Recognizer) configManager.lookup("recognizer");
+        //recognizer.allocate();
+        //recognizer.addResultListener( this );
 
-        Recognizer recognizer = (Recognizer) cm.lookup("recognizer");
-        recognizer.allocate();
-        recognizer.addResultListener( this );
+	}
+	
+	public void run()
+	{        
 
+		try {
+			dialogManager.allocate();
+			dialogManager.go();
+			dialogManager.deallocate();
+		} catch ( IOException e ) {
+			System.err.println( "Caught IO exception while listening: " + e );
+		} catch ( JSGFGrammarParseException e ) {
+			System.err.println( "Caught parse exception while listening: " + e );
+		} catch ( JSGFGrammarException e ) {
+			System.err.println( "Caught grammar exception while listening: " + e );
+		}
+		return;
+		
+ /*       
         // start the microphone or exit if the program if this is not possible
-        Microphone microphone = (Microphone) cm.lookup("microphone");
+        Microphone microphone = (Microphone) configManager.lookup("microphone");
         boolean loop = microphone != null;
         if (microphone != null && !microphone.startRecording()) {
             System.out.println("Cannot start microphone.");
@@ -67,10 +92,12 @@ public class SpeechListener implements Runnable, ResultListener {
             System.exit(1);
         }
 
+        for ( int i=0; i<3; i++ ) {
+        	
         // configure the audio input for the recognizer if we
         // have an audio file set
         if ( this.audioURL != null ) {
-        	AudioFileDataSource dataSource = (AudioFileDataSource) cm.lookup("audioFileDataSource");
+        	AudioFileDataSource dataSource = (AudioFileDataSource) configManager.lookup("audioFileDataSource");
         	dataSource.setAudioFile(audioURL, null);
         }
 
@@ -119,7 +146,16 @@ public class SpeechListener implements Runnable, ResultListener {
             }
         }
         
-        System.out.println("No more utterances.  Closingr recognizer.");
+        try {
+			Thread.sleep( 2000 );
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+        
+        }
+        
+        System.out.println("No more utterances.  Closing recognizer.");*/
 	}
 
 	private static void insertText( final IWorkbenchWindow window, final String resultText )

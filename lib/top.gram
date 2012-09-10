@@ -1,0 +1,17 @@
+#JSGF V1.0;
+
+/**
+ * JSGF Grammar for Hello World example
+ */
+
+grammar hello;
+
+public <program> = <function>+;
+
+<function> = define function <id> taking no arguments as
+	;
+	
+<number> = zero | one | two | three | four | five | six | seven | eight | nine | ten;
+
+<id> = X | Y | Z | A | B | C | F | G | M | N | main;
+	
