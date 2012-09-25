@@ -4,11 +4,12 @@
  * JSGF Grammar for Hello World example
  */
 
-grammar hello;
+grammar program;
 
-public <program> = <function>+;
+public <program> = <function>
+	;
 
-<function> = define function <id> taking no arguments as
+<function> = define function <id> taking no arguments as {goto_function}
 	;
 	
 <number> = zero | one | two | three | four | five | six | seven | eight | nine | ten;

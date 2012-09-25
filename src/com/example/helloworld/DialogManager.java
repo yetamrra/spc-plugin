@@ -13,11 +13,14 @@ package com.example.helloworld;
  */
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
 
 import javax.speech.recognition.GrammarException;
+import edu.cmu.sphinx.decoder.ResultListener;
 
 import edu.cmu.sphinx.frontend.util.Microphone;
 import edu.cmu.sphinx.jsgf.JSGFGrammar;
@@ -78,6 +81,7 @@ public class DialogManager implements Configurable {
     private DialogNode initialNode;
     private Map<String, DialogNode> nodeMap = new HashMap<String, DialogNode>();
     private String name;
+    private List<ResultListener> resultListeners = new ArrayList<ResultListener>();
 
     /*
     * (non-Javadoc)
@@ -261,6 +265,10 @@ public class DialogManager implements Configurable {
         this.recognizer = recognizer;
     }
 
+    public void addResultListener( ResultListener listener ) {
+    	this.resultListeners.add( listener );
+    }
+    
     /**
      * Represents a node in the dialog
      */
@@ -310,6 +318,9 @@ public class DialogManager implements Configurable {
         String recognize() throws GrammarException {
             trace("Recognize " + name);
             Result result = recognizer.recognize();
+            for ( ResultListener l: resultListeners ) {
+            	l.newResult( result );
+            }
             return behavior.onRecognize(result);
         }
 

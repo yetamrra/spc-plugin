@@ -30,6 +30,7 @@ import edu.cmu.sphinx.util.props.PropertySheet;
 public class SpeechListener implements Runnable, ResultListener {
 	private IWorkbenchWindow window;
 	private String configFile;
+	private URL cfgURL;
 	private URL audioURL;
 	private ConfigurationManager configManager;
 	private Recognizer recognizer;
@@ -41,40 +42,39 @@ public class SpeechListener implements Runnable, ResultListener {
 		this.configFile = config;
 		this.setAudioURL(null);
 		
-		URL cfgPath;
 		try {
 			String filePath = "lib/" + configFile;
 			URL cfgURL = Platform.getBundle( Activator.PLUGIN_ID ).getEntry(filePath);
-			cfgPath = FileLocator.toFileURL( cfgURL );
+			this.cfgURL = FileLocator.toFileURL( cfgURL );
+			
+			configManager = new ConfigurationManager( cfgURL );
+
+	        dialogManager = (DialogManager)configManager.lookup("dialogManager");
+
+	        dialogManager.addNode( "program", new SLBehavior() );
+	        dialogManager.addNode( "function", new SLBehavior() );
+	        
+	        dialogManager.setInitialNode("program");
+
+	        dialogManager.addResultListener( this );
+	        
+			dialogManager.allocate();
+
 		}
 		catch ( IOException e ) {
 			System.out.println( "Cannot find " + configFile + ": " + e.getMessage() );
 			return;
 		}
-
-		configManager = new ConfigurationManager( cfgPath );
-
-        dialogManager = (DialogManager)configManager.lookup("dialogManager");
-
-        dialogManager.addNode( "top", new SLBehavior() );
-        
-        dialogManager.setInitialNode("top");
-        
-        //recognizer = (Recognizer) configManager.lookup("recognizer");
-        //recognizer.allocate();
-        //recognizer.addResultListener( this );
-
 	}
 	
 	public void run()
 	{        
 
-		try {
-			dialogManager.allocate();
-			dialogManager.go();
+		try {			
+            System.out.println("Running  ...");
+            dialogManager.go();
+            System.out.println("Cleaning up  ...");
 			dialogManager.deallocate();
-		} catch ( IOException e ) {
-			System.err.println( "Caught IO exception while listening: " + e );
 		} catch ( JSGFGrammarParseException e ) {
 			System.err.println( "Caught parse exception while listening: " + e );
 		} catch ( JSGFGrammarException e ) {
@@ -217,9 +217,12 @@ public class SpeechListener implements Runnable, ResultListener {
 
 	@Override
 	public void newResult(Result result) {
-		String text = result.getBestResultNoFiller(); 
+		String text = result.getBestFinalResultNoFiller(); 
 		
 		System.out.println( "Hypothesis: " + text );
+		if ( text.length() > 0 ) {
+			insertText( window, text );
+		}
 		
 	}
 

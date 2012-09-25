@@ -102,7 +102,7 @@
         <property name="dictionary" value="dictionary"/>
         <property name="grammarLocation"
              value="resource:/"/>
-        <property name="grammarName" value="spokenLang"/>
+        <property name="grammarName" value="program"/>
 	<property name="logMath" value="logMath"/>
     </component>
 
