@@ -92,10 +92,14 @@ public class DialogManager implements Configurable {
         logger = ps.getLogger();
         grammar = 
             (JSGFGrammar) ps.getComponent(PROP_JSGF_GRAMMAR);
-        microphone = 
-            (Microphone) ps.getComponent(PROP_MICROPHONE);
         recognizer = 
             (Recognizer) ps.getComponent(PROP_RECOGNIZER);
+        try {
+        	microphone = (Microphone) ps.getComponent(PROP_MICROPHONE);
+        }
+        catch ( PropertyException e ) {
+        	microphone = null;
+        }
     }
 
 
@@ -159,7 +163,7 @@ public class DialogManager implements Configurable {
         DialogNode curNode = initialNode;
 
         try {
-	    if (microphone.startRecording()) {
+	    if (microphone == null || microphone.startRecording()) {
                 while (true) {
 
                     if (curNode != lastNode) {

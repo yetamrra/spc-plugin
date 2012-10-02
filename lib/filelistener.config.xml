@@ -14,7 +14,7 @@
     <!-- frequently tuned properties                              -->
     <!-- ******************************************************** -->
 
-    <property name="logLevel" value="DEBUG"/>
+    <property name="logLevel" value="INFO"/>
 
     <property name="absoluteBeamWidth"  value="-1"/>
     <property name="relativeBeamWidth"  value="1E-80"/>
@@ -25,6 +25,11 @@
     <property name="recognizer" value="recognizer"/>
     <property name="showCreations" value="false"/>
 
+    <component name="dialogManager" type="com.example.helloworld.DialogManager">
+        <property name="microphone" value="microphone"/>
+        <property name="jsgfGrammar" value="jsgfGrammar"/>
+        <property name="recognizer" value="recognizer"/>
+    </component>
 
     <!-- ******************************************************** -->
     <!-- word recognizer configuration                            -->
@@ -96,7 +101,7 @@
         <property name="dictionary" value="dictionary"/>
         <property name="grammarLocation"
              value="resource:/"/>
-        <property name="grammarName" value="spokenLang"/>
+        <property name="grammarName" value="program"/>
 	<property name="logMath" value="logMath"/>
     </component>
 

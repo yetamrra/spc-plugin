@@ -6,25 +6,10 @@
 
 grammar function;
 
-public <function> = <statement>+
-	;
+import <statement.standard_statements>;
+
+public <function> = <statement>+ ;
 
 <statement> = end function { goto_program } |
-			  <assignment> |
-			  <printFrags>
-	;
-	
-<assignment> = Set <id> to <expression>;
-
-<printFrags> = print <expression>
-             | new line
-             ;
-
-/* <expression> = <number> | <id> | <callExprFrags>; */
-
-<expression> = <number> | <id>;
-
-<number> = zero | one | two | three | four | five | six | seven | eight | nine | ten;
-
-<id> = X | Y | Z | A | B | C | F | G | M | N | main;
-	
+			  <standard_statements>
+			;

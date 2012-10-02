@@ -58,6 +58,11 @@ public class SpeechListener implements Runnable, ResultListener {
 
 	        dialogManager.addResultListener( this );
 	        
+	        if ( this.audioURL != null ) {
+	        	AudioFileDataSource dataSource = (AudioFileDataSource) configManager.lookup("audioFileDataSource");
+	        	dataSource.setAudioFile(audioURL, null);
+	        }
+
 			dialogManager.allocate();
 
 		}
