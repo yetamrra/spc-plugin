@@ -6,11 +6,13 @@
 
 grammar program;
 
-public <program> = <function>
-	;
+public <program> = <function> {goto_function}
+				 | stop listening {exit}
+				 ;
 
-<function> = define function <id> taking no arguments as {goto_function}
-	;
+<function> = define function <id> taking no arguments as 
+		   | define function <id> taking arguments <id> (and <id>)* as
+		   ;
 	
 <number> = zero | one | two | three | four | five | six | seven | eight | nine | ten;
 

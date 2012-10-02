@@ -86,81 +86,6 @@ public class SpeechListener implements Runnable, ResultListener {
 			System.err.println( "Caught grammar exception while listening: " + e );
 		}
 		return;
-		
- /*       
-        // start the microphone or exit if the program if this is not possible
-        Microphone microphone = (Microphone) configManager.lookup("microphone");
-        boolean loop = microphone != null;
-        if (microphone != null && !microphone.startRecording()) {
-            System.out.println("Cannot start microphone.");
-            recognizer.deallocate();
-            System.exit(1);
-        }
-
-        for ( int i=0; i<3; i++ ) {
-        	
-        // configure the audio input for the recognizer if we
-        // have an audio file set
-        if ( this.audioURL != null ) {
-        	AudioFileDataSource dataSource = (AudioFileDataSource) configManager.lookup("audioFileDataSource");
-        	dataSource.setAudioFile(audioURL, null);
-        }
-
-//        Display.getDefault().asyncExec( new Runnable() {
-//        	public void run() {
-//        		MessageDialog.openInformation(
-//        			window.getShell(),
-//        			"Listener is ready",
-//        			"Begin speaking"
-//        		);
-//        	}
-//        }
-//        );
-//        
-		//MessageDialog.openInformation(
-		//		window.getShell(),
-		//		"Listener is ready",
-		//		"Begin speaking");
-
-        //System.out.println("Say: (Good morning | Hello) ( Bhiksha | Evandro | Paul | Philip | Rita | Will )");
-
-        // loop the recognition until the program exits.
-        while (true) {
-        	if ( loop ) { 
-        		System.out.println("Start speaking. Press Ctrl-C to quit.\n");
-        	} else {
-        		System.out.println("Starting recognition from audio file");
-        	}
-
-            Result result = recognizer.recognize();
-
-            if (result != null) {
-            	// String resultText = result.getBestFinalResultNoFiller();
-            	String resultText = result.getBestResultNoFiller();
-
-                insertText( window, resultText );
-
-
-                System.out.println("You said: " + resultText + '\n');
-            } else {
-            	if ( !loop ) {
-            		break;
-            	} else {
-            		System.out.println("I can't hear what you said.\n");
-            	}
-            }
-        }
-        
-        try {
-			Thread.sleep( 2000 );
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-        
-        }
-        
-        System.out.println("No more utterances.  Closing recognizer.");*/
 	}
 
 	private static void insertText( final IWorkbenchWindow window, final String resultText )
@@ -225,7 +150,8 @@ public class SpeechListener implements Runnable, ResultListener {
 		String text = result.getBestFinalResultNoFiller(); 
 		
 		System.out.println( "Hypothesis: " + text );
-		if ( text.length() > 0 ) {
+		// FIXME: handle this better
+		if ( text.length() > 0 && !text.equals("stop listening") ) {
 			insertText( window, text );
 		}
 		

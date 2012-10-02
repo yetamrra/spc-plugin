@@ -36,8 +36,8 @@ class SLBehavior extends NewGrammarDialogNodeBehavior {
      */
     protected void help() {
         System.out.println(" ======== " + getGrammarName() + " =======");
-        dumpSampleUtterances();
-        System.out.println(" =================================");
+        //dumpSampleUtterances();
+        //System.out.println(" =================================");
     }
 
 
@@ -56,7 +56,8 @@ class SLBehavior extends NewGrammarDialogNodeBehavior {
                     + result.getBestFinalResultNoFiller() + '\n');
             if (tag.equals("exit")) {
                 System.out.println("Goodbye! Thanks for visiting!\n");
-                System.exit(0);
+                return tag;
+                //System.exit(0);
             }
             if (tag.equals("help")) {
                 help();

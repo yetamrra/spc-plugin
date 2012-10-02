@@ -9,7 +9,8 @@ grammar statement;
 public <standard_statements> = <statement>+;
 
 <statement> = <assignment> |
-			  <printFrags>
+			  <printFrags> |
+			  return <expression>
 			  ;
 	
 <assignment> = Set <id> to <expression>;
@@ -19,6 +20,13 @@ public <standard_statements> = <statement>+;
              ;
 
 <expression> = <number> | <id> | <callExprFrags>; 
+
+<callExprFrags> = the result of calling <id>
+                | <withFrags>
+                ;
+            
+<withFrags> = with <expression> (and <expression>)*
+            ;
 
 <number> = zero | one | two | three | four | five | six | seven | eight | nine | ten;
 

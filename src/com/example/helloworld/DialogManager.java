@@ -33,339 +33,341 @@ import edu.cmu.sphinx.util.props.PropertyException;
 import edu.cmu.sphinx.util.props.PropertySheet;
 import edu.cmu.sphinx.util.props.S4Component;
 
-
-
 /**
- * The DialogManager is a component that is used to manage speech
- * dialogs.  A speech dialog is represented as a graph of dialog
- * nodes. The dialog manager maintains an active node. When a node is
- * active it is directing the recognition process. Typically a dialog
- * node will define the current active grammar. The recognition result
- * is typically used to direct the dialog manager to select the next
- * active node. An application can easily customize the behavior at
- * each active node.
+ * The DialogManager is a component that is used to manage speech dialogs. A
+ * speech dialog is represented as a graph of dialog nodes. The dialog manager
+ * maintains an active node. When a node is active it is directing the
+ * recognition process. Typically a dialog node will define the current active
+ * grammar. The recognition result is typically used to direct the dialog
+ * manager to select the next active node. An application can easily customize
+ * the behavior at each active node.
  */
 public class DialogManager implements Configurable {
-    /**
-     * The property that defines the name of the grammar component 
-     * to be used by this dialog manager
-     */
-    @S4Component(type = JSGFGrammar.class)
-    public final static String PROP_JSGF_GRAMMAR = "jsgfGrammar";
+	/**
+	 * The property that defines the name of the grammar component to be used by
+	 * this dialog manager
+	 */
+	@S4Component(type = JSGFGrammar.class)
+	public final static String PROP_JSGF_GRAMMAR = "jsgfGrammar";
 
-    /**
-     * The property that defines the name of the microphone to be used 
-     * by this dialog manager
-     */
-    @S4Component(type = Microphone.class)
-    public final static String PROP_MICROPHONE = "microphone";
+	/**
+	 * The property that defines the name of the microphone to be used by this
+	 * dialog manager
+	 */
+	@S4Component(type = Microphone.class)
+	public final static String PROP_MICROPHONE = "microphone";
 
-    /**
-     * The property that defines the name of the recognizer to be used by
-     * this dialog manager
-     */
-    @S4Component(type = Recognizer.class)
-    public final static String PROP_RECOGNIZER = "recognizer";
+	/**
+	 * The property that defines the name of the recognizer to be used by this
+	 * dialog manager
+	 */
+	@S4Component(type = Recognizer.class)
+	public final static String PROP_RECOGNIZER = "recognizer";
 
-    // ------------------------------------
-    // Configuration data
-    // ------------------------------------
-    private JSGFGrammar grammar;
-    private Logger logger;
-    private Recognizer recognizer;
-        private Microphone microphone;
+	// ------------------------------------
+	// Configuration data
+	// ------------------------------------
+	private JSGFGrammar grammar;
+	private Logger logger;
+	private Recognizer recognizer;
+	private Microphone microphone;
 
-    // ------------------------------------
-    // local data
-    // ------------------------------------
-    private DialogNode initialNode;
-    private Map<String, DialogNode> nodeMap = new HashMap<String, DialogNode>();
-    private String name;
-    private List<ResultListener> resultListeners = new ArrayList<ResultListener>();
+	// ------------------------------------
+	// local data
+	// ------------------------------------
+	private DialogNode initialNode;
+	private Map<String, DialogNode> nodeMap = new HashMap<String, DialogNode>();
+	private String name;
+	private List<ResultListener> resultListeners = new ArrayList<ResultListener>();
 
-    /*
-    * (non-Javadoc)
-    *
-    * @see edu.cmu.sphinx.util.props.Configurable#newProperties(edu.cmu.sphinx.util.props.PropertySheet)
-    */
-    public void newProperties(PropertySheet ps) throws PropertyException {
-        logger = ps.getLogger();
-        grammar = 
-            (JSGFGrammar) ps.getComponent(PROP_JSGF_GRAMMAR);
-        recognizer = 
-            (Recognizer) ps.getComponent(PROP_RECOGNIZER);
-        try {
-        	microphone = (Microphone) ps.getComponent(PROP_MICROPHONE);
-        }
-        catch ( PropertyException e ) {
-        	microphone = null;
-        }
-    }
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * edu.cmu.sphinx.util.props.Configurable#newProperties(edu.cmu.sphinx.util
+	 * .props.PropertySheet)
+	 */
+	public void newProperties(PropertySheet ps) throws PropertyException {
+		logger = ps.getLogger();
+		grammar = (JSGFGrammar) ps.getComponent(PROP_JSGF_GRAMMAR);
+		recognizer = (Recognizer) ps.getComponent(PROP_RECOGNIZER);
+		try {
+			microphone = (Microphone) ps.getComponent(PROP_MICROPHONE);
+		} catch (PropertyException e) {
+			microphone = null;
+		}
+	}
 
+	/**
+	 * Adds a new node to the dialog manager. The dialog manager maintains a set
+	 * of dialog nodes. When a new node is added the application specific beh
+	 * 
+	 * @param name
+	 *            the name of the node
+	 * @param behavior
+	 *            the application specified behavior for the node
+	 */
+	public void addNode(String name, DialogNodeBehavior behavior) {
+		DialogNode node = new DialogNode(name, behavior);
+		putNode(node);
+	}
 
-    /**
-     * Adds a new node to the dialog manager. The dialog manager
-     * maintains a set of dialog nodes. When a new node is added the
-     * application specific beh
-     *
-     * @param name the name of the node
-     * @param behavior the application specified behavior for the node
-     */
-    public void addNode(String name, DialogNodeBehavior behavior) {
-        DialogNode node = new DialogNode(name, behavior);
-        putNode(node);
-    }
+	/**
+	 * Sets the name of the initial node for the dialog manager
+	 * 
+	 * @param name
+	 *            the name of the initial node. Must be the name of a previously
+	 *            added dialog node.
+	 */
+	public void setInitialNode(String name) {
+		if (getNode(name) == null) {
+			throw new IllegalArgumentException("Unknown node " + name);
+		}
+		initialNode = getNode(name);
+	}
 
-    /**
-     * Sets the name of the initial node for the dialog manager
-     *
-     * @param name the name of the initial node. Must be the name of a
-     * previously added dialog node.
-     */
-    public void setInitialNode(String name) {
-        if (getNode(name) == null) {
-            throw new IllegalArgumentException("Unknown node " + name);
-        }
-        initialNode = getNode(name);
-    }
+	/**
+	 * Gets the recognizer and the dialog nodes ready to run
+	 * 
+	 * @throws IOException
+	 *             if an error occurs while allocating the recognizer.
+	 */
+	public void allocate() throws IOException {
+		recognizer.allocate();
 
-    /**
-     * Gets the recognizer and the dialog nodes ready to run
-     *
-     * @throws IOException if an error occurs while allocating the
-     * recognizer.
-     */
-    public void allocate() throws IOException {
-        recognizer.allocate();
+		for (DialogNode node : nodeMap.values()) {
+			node.init();
+		}
+	}
 
-        for (DialogNode node : nodeMap.values()) {
-            node.init();
-        }
-    }
+	/**
+	 * Releases all resources allocated by the dialog manager
+	 */
+	public void deallocate() {
+		recognizer.deallocate();
+	}
 
-    /**
-     * Releases all resources allocated by the dialog manager
-     */
-    public void deallocate() {
-        recognizer.deallocate();
-    }
+	/**
+	 * Invokes the dialog manager. The dialog manager begin to process the
+	 * dialog states starting at the initial node. This method will not return
+	 * until the dialog manager is finished processing states
+	 * 
+	 * @throws JSGFGrammarException
+	 * @throws JSGFGrammarParseException
+	 */
+	public void go() throws JSGFGrammarParseException, JSGFGrammarException {
+		DialogNode lastNode = null;
+		DialogNode curNode = initialNode;
 
-    /**
-     * Invokes the dialog manager. The dialog manager begin to process
-     * the dialog states starting at the initial node. This method
-     * will not return until the dialog manager is finished processing
-     * states
-     * @throws JSGFGrammarException 
-     * @throws JSGFGrammarParseException 
-     */
-    public void go() throws JSGFGrammarParseException, JSGFGrammarException {
-        DialogNode lastNode = null;
-        DialogNode curNode = initialNode;
+		try {
+			if (microphone == null || microphone.startRecording()) {
+				while (true) {
 
-        try {
-	    if (microphone == null || microphone.startRecording()) {
-                while (true) {
+					if (curNode != lastNode) {
+						if (lastNode != null) {
+							lastNode.exit();
+						}
+						curNode.enter();
+						lastNode = curNode;
+					}
+					String nextStateName = curNode.recognize();
+					if (nextStateName == null || nextStateName.isEmpty()) {
+						continue;
+					} else if ( nextStateName.equals("exit") ) {
+						break;
+					} else {
+						DialogNode node = nodeMap.get(nextStateName);
+						if (node == null) {
+							warn("Can't transition to unknown state "
+									+ nextStateName);
+						} else {
+							curNode = node;
+						}
+					}
+				}
+			} else {
+				error("Can't start the microphone");
+			}
+		} catch (GrammarException ge) {
+			error("grammar problem in state " + curNode.getName() + ' ' + ge);
+		} catch (IOException ioe) {
+			error("problem loading grammar in state " + curNode.getName() + ' '
+					+ ioe);
+		}
+	}
 
-                    if (curNode != lastNode) {
-                        if (lastNode != null) {
-                            lastNode.exit();
-                        }
-                        curNode.enter();
-                        lastNode = curNode;
-                    } 
-                    String nextStateName  = curNode.recognize();
-                    if (nextStateName == null || nextStateName.isEmpty()) {
-                        continue;
-                    } else {
-                        DialogNode node = nodeMap.get(nextStateName);
-                        if (node == null) {
-                            warn("Can't transition to unknown state " 
-                                    + nextStateName);
-                        } else {
-                            curNode = node;
-                        }
-                    }
-                }
-            } else {
-                error("Can't start the microphone");
-            }
-        } catch (GrammarException ge) {
-            error("grammar problem in state " + curNode.getName() 
-                    + ' ' + ge);
-        } catch (IOException ioe) {
-            error("problem loading grammar in state " + curNode.getName() 
-                    + ' ' + ioe);
-        }
-    }
+	/**
+	 * Returns the name of this component
+	 * 
+	 * @return the name of the component.
+	 */
+	public String getName() {
+		return name;
+	}
 
+	/**
+	 * Gets the dialog node with the given name
+	 * 
+	 * @param name
+	 *            the name of the node
+	 */
+	private DialogNode getNode(String name) {
+		return nodeMap.get(name);
+	}
 
-    /**
-     * Returns the name of this component
-     *
-     * @return the name of the component.
-     */
-    public String getName() {
-        return name;
-    }
+	/**
+	 * Puts a node into the node map
+	 * 
+	 * @param node
+	 *            the node to place into the node map
+	 */
+	private void putNode(DialogNode node) {
+		nodeMap.put(node.getName(), node);
+	}
 
+	/**
+	 * Issues a warning message
+	 * 
+	 * @param s
+	 *            the message
+	 */
+	private void warn(String s) {
+		System.out.println("Warning: " + s);
+	}
 
-    /**
-     * Gets the dialog node with the given name
-     *
-     * @param name the name of the node
-     */
-    private DialogNode getNode(String name) {
-        return nodeMap.get(name);
-    }
+	/**
+	 * Issues an error message
+	 * 
+	 * @param s
+	 *            the message
+	 */
+	private void error(String s) {
+		System.out.println("Error: " + s);
+	}
 
-    /**
-     * Puts a node into the node map
-     *
-     * @param node the node to place into the node map
-     */
-    private void putNode(DialogNode node) {
-        nodeMap.put(node.getName(), node);
-    }
+	/**
+	 * Issues a tracing message
+	 * 
+	 * @parma s the message
+	 */
+	private void trace(String s) {
+		logger.info(s);
+	}
 
+	public Recognizer getRecognizer() {
+		return recognizer;
+	}
 
-    /**
-     * Issues a warning message
-     *
-     * @param s the message
-     */
-    private void warn(String s) {
-        System.out.println("Warning: " + s);
-    }
+	/**
+	 * Sets the recognizer
+	 * 
+	 * @param recognizer
+	 *            the recognizer
+	 */
+	public void setRecognizer(Recognizer recognizer) {
+		this.recognizer = recognizer;
+	}
 
-    /**
-     * Issues an error message
-     *
-     * @param s the message
-     */
-    private void error(String s) {
-        System.out.println("Error: " + s);
-    }
+	public void addResultListener(ResultListener listener) {
+		this.resultListeners.add(listener);
+	}
 
-    /**
-     * Issues a tracing message
-     *
-     * @parma s the message
-     */
-    private void trace(String s) {
-        logger.info(s);
-    }
+	/**
+	 * Represents a node in the dialog
+	 */
+	class DialogNode {
+		private DialogNodeBehavior behavior;
+		private String name;
 
+		/**
+		 * Creates a dialog node with the given name an application behavior
+		 * 
+		 * @param name
+		 *            the name of the node
+		 * 
+		 * @param behavior
+		 *            the application behavor for the node
+		 * 
+		 */
+		DialogNode(String name, DialogNodeBehavior behavior) {
+			this.behavior = behavior;
+			this.name = name;
+		}
 
-    public Recognizer getRecognizer() {
-        return recognizer;
-    }
+		/**
+		 * Initializes the node
+		 */
 
-    /**
-     * Sets the recognizer
-     *
-     * @param recognizer the recognizer
-     */
-    public void setRecognizer(Recognizer recognizer) {
-        this.recognizer = recognizer;
-    }
+		void init() {
+			behavior.onInit(this);
+		}
 
-    public void addResultListener( ResultListener listener ) {
-    	this.resultListeners.add( listener );
-    }
-    
-    /**
-     * Represents a node in the dialog
-     */
-    class   DialogNode {
-        private DialogNodeBehavior behavior;
-        private String name;
+		/**
+		 * Enters the node, prepares it for recognition
+		 * 
+		 * @throws JSGFGrammarException
+		 * @throws JSGFGrammarParseException
+		 */
+		void enter() throws IOException, JSGFGrammarParseException,
+				JSGFGrammarException {
+			trace("Entering " + name);
+			behavior.onEntry();
+			behavior.onReady();
+		}
 
-        /**
-         * Creates a dialog node with the given name an application
-         * behavior
-         *
-         * @param name the name of the node
-         *
-         * @param behavior the application behavor for the node
-         *
-         */
-        DialogNode(String name, DialogNodeBehavior behavior) {
-            this.behavior = behavior;
-            this.name = name;
-        }
+		/**
+		 * Performs recognition at the node.
+		 * 
+		 * @return the result tag
+		 */
+		String recognize() throws GrammarException {
+			trace("Recognize " + name);
+			Result result = recognizer.recognize();
+			for (ResultListener l : resultListeners) {
+				l.newResult(result);
+			}
+			return behavior.onRecognize(result);
+		}
 
+		/**
+		 * Exits the node
+		 */
+		void exit() {
+			trace("Exiting " + name);
+			behavior.onExit();
+		}
 
-        /**
-         * Initializes the node
-         */
-        
-        void init() {
-            behavior.onInit(this);
-        }
+		/**
+		 * Gets the name of the node
+		 * 
+		 * @return the name of the node
+		 */
+		public String getName() {
+			return name;
+		}
 
-        /**
-         * Enters the node, prepares it for recognition
-         * @throws JSGFGrammarException 
-         * @throws JSGFGrammarParseException 
-         */
-        void enter() throws IOException, JSGFGrammarParseException, JSGFGrammarException {
-            trace("Entering " + name);
-            behavior.onEntry();
-            behavior.onReady();
-        }
+		/**
+		 * Returns the JSGF Grammar for the dialog manager that contains this
+		 * node
+		 * 
+		 * @return the grammar
+		 */
+		public JSGFGrammar getGrammar() {
+			return grammar;
+		}
 
-        /**
-         * Performs recognition at the node.
-         *
-         * @return the result tag
-         */
-        String recognize() throws GrammarException {
-            trace("Recognize " + name);
-            Result result = recognizer.recognize();
-            for ( ResultListener l: resultListeners ) {
-            	l.newResult( result );
-            }
-            return behavior.onRecognize(result);
-        }
+		/**
+		 * Traces a message
+		 * 
+		 * @param msg
+		 *            the message to trace
+		 */
+		public void trace(String msg) {
+			DialogManager.this.trace(msg);
+		}
 
-        /**
-         * Exits the node
-         */
-        void exit() {
-            trace("Exiting " + name);
-            behavior.onExit();
-        }
-
-        /**
-         * Gets the name of the node
-         *
-         * @return the name of the node
-         */
-        public String getName() {
-            return name;
-        }
-
-        /**
-         * Returns the JSGF Grammar for the dialog manager that
-         * contains this node
-         *
-         * @return the grammar
-         */
-        public JSGFGrammar getGrammar() {
-            return grammar;
-        }
-
-        /**
-         * Traces a message
-         *
-         * @param msg the message to trace
-         */
-        public void trace(String msg) {
-            DialogManager.this.trace(msg);
-        }
-
-        public DialogManager getDialogManager() {
-            return DialogManager.this;
-        }
-    }
+		public DialogManager getDialogManager() {
+			return DialogManager.this;
+		}
+	}
 }
