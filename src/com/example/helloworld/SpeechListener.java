@@ -18,10 +18,8 @@ import org.eclipse.ui.texteditor.ITextEditor;
 
 import edu.cmu.sphinx.decoder.ResultListener;
 import edu.cmu.sphinx.frontend.util.AudioFileDataSource;
-import edu.cmu.sphinx.frontend.util.Microphone;
 import edu.cmu.sphinx.jsgf.JSGFGrammarException;
 import edu.cmu.sphinx.jsgf.JSGFGrammarParseException;
-import edu.cmu.sphinx.recognizer.Recognizer;
 import edu.cmu.sphinx.result.Result;
 import edu.cmu.sphinx.util.props.ConfigurationManager;
 import edu.cmu.sphinx.util.props.PropertyException;
@@ -33,7 +31,6 @@ public class SpeechListener implements Runnable, ResultListener {
 	private URL cfgURL;
 	private URL audioURL;
 	private ConfigurationManager configManager;
-	private Recognizer recognizer;
 	private DialogManager dialogManager;
 
 	public SpeechListener( IWorkbenchWindow w, String config )
@@ -58,11 +55,6 @@ public class SpeechListener implements Runnable, ResultListener {
 
 	        dialogManager.addResultListener( this );
 	        
-	        if ( this.audioURL != null ) {
-	        	AudioFileDataSource dataSource = (AudioFileDataSource) configManager.lookup("audioFileDataSource");
-	        	dataSource.setAudioFile(audioURL, null);
-	        }
-
 			dialogManager.allocate();
 
 		}
@@ -75,7 +67,12 @@ public class SpeechListener implements Runnable, ResultListener {
 	public void run()
 	{        
 
-		try {			
+		try {	
+	        if ( this.audioURL != null ) {
+	        	AudioFileDataSource dataSource = (AudioFileDataSource) configManager.lookup("audioFileDataSource");
+	        	dataSource.setAudioFile(audioURL, null);
+	        }
+
             System.out.println("Running  ...");
             dialogManager.go();
             System.out.println("Cleaning up  ...");
