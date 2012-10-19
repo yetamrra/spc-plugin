@@ -8,16 +8,20 @@ grammar statement;
 
 public <standard_statements> = <statement>+;
 
-<statement> = <assignment> |
-			  <printFrags> |
-			  return <expression>
-			  ;
+<statement> = <assignment>
+			| <printFrags>
+			| return <expression>
+			| <whileFrags> 
+			;
 	
 <assignment> = Set <id> to <expression>;
 
 <printFrags> = print <expression>
              | new line
              ;
+
+<whileFrags> = while <boolExpr> do {goto_while}
+			 ;
 
 <expression> = <number> | <id> | <callExprFrags>; 
 

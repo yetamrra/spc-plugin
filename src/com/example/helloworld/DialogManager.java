@@ -17,6 +17,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Stack;
 import java.util.logging.Logger;
 
 import javax.speech.recognition.GrammarException;
@@ -80,6 +81,8 @@ public class DialogManager implements Configurable {
 	private String name;
 	private List<ResultListener> resultListeners = new ArrayList<ResultListener>();
 
+	private Stack<DialogNode> savedStates = new Stack<DialogNode>();
+	
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -175,12 +178,15 @@ public class DialogManager implements Configurable {
 						continue;
 					} else if ( nextStateName.equals("exit") ) {
 						break;
+					} else if ( nextStateName.equals("out") ) {
+						curNode = savedStates.pop();
 					} else {
 						DialogNode node = nodeMap.get(nextStateName);
 						if (node == null) {
 							warn("Can't transition to unknown state "
 									+ nextStateName);
 						} else {
+							savedStates.push( curNode );
 							curNode = node;
 						}
 					}

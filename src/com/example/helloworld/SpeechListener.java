@@ -41,8 +41,8 @@ public class SpeechListener implements Runnable, ResultListener {
 		
 		try {
 			String filePath = "lib/" + configFile;
-			URL cfgURL = Platform.getBundle( Activator.PLUGIN_ID ).getEntry(filePath);
-			this.cfgURL = FileLocator.toFileURL( cfgURL );
+			URL tmp = Platform.getBundle( Activator.PLUGIN_ID ).getEntry(filePath);
+			this.cfgURL = FileLocator.toFileURL( tmp );
 			
 			configManager = new ConfigurationManager( cfgURL );
 
