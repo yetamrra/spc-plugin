@@ -1,0 +1,15 @@
+#JSGF V1.0;
+
+/**
+ * JSGF Grammar for while blocks.
+ */
+
+grammar function;
+
+import <statement.standard_statements>;
+
+public <function> = <statement>+ ;
+
+<statement> = end if {out}
+			| <standard_statements>
+			;
