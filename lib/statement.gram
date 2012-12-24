@@ -27,6 +27,10 @@ public <standard_statements> = <statement>+;
 <ifFrags> = if <boolExpr> then {goto_if}
 		  ;
 
+<boolExpr> = <expression> <boolop> <expression> ;
+
+<boolop> = less than | greater than | equals | not equals ;
+
 <expression> = <number> | <id> | <callExprFrags>; 
 
 <callExprFrags> = the result of calling <id>
