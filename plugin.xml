@@ -16,7 +16,7 @@
          </menu>
          <action
                label="&amp;Start Dictation"
-               icon="icons/sample.gif"
+               icon="icons/microphone.png"
                class="com.example.helloworld.actions.SampleAction"
                tooltip="Start Speech Listener"
                menubarPath="sampleMenu/sampleGroup"
@@ -25,7 +25,7 @@
          </action>
          <action
                label="&amp;Process Audio File"
-               icon="icons/sample.gif"
+               icon="icons/audio.png"
                class="com.example.helloworld.actions.ProcessAudioFile"
                tooltip="Process the selected audio file"
                menubarPath="sampleMenu/sampleGroup"
