@@ -81,7 +81,7 @@ public class DialogManager implements Configurable {
 	private String name;
 	private List<ResultListener> resultListeners = new ArrayList<ResultListener>();
 
-	private Stack<DialogNode> savedStates = new Stack<DialogNode>();
+	public static Stack<DialogNode> savedStates = new Stack<DialogNode>();
 	
 	/*
 	 * (non-Javadoc)
@@ -161,6 +161,7 @@ public class DialogManager implements Configurable {
 	public void go() throws JSGFGrammarParseException, JSGFGrammarException {
 		DialogNode lastNode = null;
 		DialogNode curNode = initialNode;
+		savedStates.push( curNode );
 
 		try {
 			if (microphone == null || microphone.startRecording()) {
@@ -179,15 +180,25 @@ public class DialogManager implements Configurable {
 					} else if ( nextStateName.equals("exit") ) {
 						break;
 					} else if ( nextStateName.equals("out") ) {
-						curNode = savedStates.pop();
+						savedStates.pop();
+						curNode = savedStates.peek();
+						System.out.println( "Context out: " + savedStates );
+					} else if ( nextStateName.equals("correction") ) {
+						// The result listener has already made the correction, but
+						// we might have to pop out from a block if the correction
+						// was the start of a block.  Therefore this is either the
+						// same as "out" or the same as ""
+						// FIXME: Do we need to do anything after all?
+						assert ( false );
 					} else {
 						DialogNode node = nodeMap.get(nextStateName);
 						if (node == null) {
 							warn("Can't transition to unknown state "
 									+ nextStateName);
 						} else {
-							savedStates.push( curNode );
+							savedStates.push( node );
 							curNode = node;
+							System.out.println( "New context: " + savedStates );
 						}
 					}
 				}
@@ -329,10 +340,15 @@ public class DialogManager implements Configurable {
 		String recognize() throws GrammarException {
 			trace("Recognize " + name);
 			Result result = recognizer.recognize();
+			String tag = behavior.onRecognize(result);
 			for (ResultListener l : resultListeners) {
-				l.newResult(result);
+				if ( l instanceof SLResultListener ) {
+					tag = ((SLResultListener)l).newResult( result, savedStates.peek(), tag );
+				} else {
+					l.newResult(result);
+				}
 			}
-			return behavior.onRecognize(result);
+			return tag;
 		}
 
 		/**

@@ -49,6 +49,12 @@ class SLBehavior extends NewGrammarDialogNodeBehavior {
      * @return the name of the next dialog node or null if control should remain in the current node.
      */
     public String onRecognize(Result result) throws GrammarException {
+    	if ( result == null ) {
+    		// FIXME: handle properly
+    		System.out.println( "Received null result" );
+    		return "exit";
+    	}
+    	
         String tag = super.onRecognize(result);
 
         if (tag != null) {
@@ -67,6 +73,10 @@ class SLBehavior extends NewGrammarDialogNodeBehavior {
                 return tag.replaceFirst("goto_", "");
             } else if (tag.startsWith("browse")) {
                 execute(tag);
+            } else if (tag.equals("out") ) {
+            	return "out";
+            } else if ( tag.equals("correction") ) {
+            	return "correction";
             }
         } else {
             System.out.println("\n Oops! didn't hear you.\n");

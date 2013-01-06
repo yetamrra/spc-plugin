@@ -2,21 +2,15 @@ package com.example.helloworld;
 
 import java.io.IOException;
 import java.net.URL;
+import java.util.Stack;
 
 import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.Platform;
-import org.eclipse.jface.text.BadLocationException;
-import org.eclipse.jface.text.IDocument;
-import org.eclipse.jface.text.ITextSelection;
 import org.eclipse.swt.widgets.Display;
-import org.eclipse.ui.IEditorPart;
-import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchWindow;
-import org.eclipse.ui.texteditor.AbstractTextEditor;
-import org.eclipse.ui.texteditor.IDocumentProvider;
-import org.eclipse.ui.texteditor.ITextEditor;
 
-import edu.cmu.sphinx.decoder.ResultListener;
+import com.example.helloworld.DialogManager.DialogNode;
+
 import edu.cmu.sphinx.frontend.util.AudioFileDataSource;
 import edu.cmu.sphinx.jsgf.JSGFGrammarException;
 import edu.cmu.sphinx.jsgf.JSGFGrammarParseException;
@@ -25,19 +19,21 @@ import edu.cmu.sphinx.util.props.ConfigurationManager;
 import edu.cmu.sphinx.util.props.PropertyException;
 import edu.cmu.sphinx.util.props.PropertySheet;
 
-public class SpeechListener implements Runnable, ResultListener {
+public class SpeechListener implements Runnable, SLResultListener {
 	private IWorkbenchWindow window;
 	private String configFile;
 	private URL cfgURL;
 	private URL audioURL;
 	private ConfigurationManager configManager;
 	private DialogManager dialogManager;
-
+	private Stack<TextInsertion> previousInserts;
+	
 	public SpeechListener( IWorkbenchWindow w, String config )
 	{
 		this.window = w;
 		this.configFile = config;
 		this.setAudioURL(null);
+		this.previousInserts = new Stack<TextInsertion>();	// new one every time even though it's static
 		
 		try {
 			String filePath = "lib/" + configFile;
@@ -88,7 +84,7 @@ public class SpeechListener implements Runnable, ResultListener {
 		return;
 	}
 
-	private static void insertText( final IWorkbenchWindow window, final String resultText )
+	private void insertText( String resultText, DialogNode context )
 	{
 		if ( resultText.length() == 0 ) {
 			return;
@@ -111,32 +107,12 @@ public class SpeechListener implements Runnable, ResultListener {
 		tmp = tmp.replaceAll( "\\bnot equals\\b", "!=" );
 		tmp = tmp.replaceAll( "\\bequals\\b", "=" );
 		
-		final String insertText = tmp + " \n";
+		String insertText = tmp + " \n";
 		
         //IWorkbench wb = PlatformUI.getWorkbench();
         //IWorkbenchWindow win = wb.getActiveWorkbenchWindow();
-        Display.getDefault().asyncExec(new Runnable() {
-        	 public void run() {
-        	        IWorkbenchPage page = window.getActivePage();
-        	        IEditorPart part = page.getActiveEditor();
-        	        if (!(part instanceof AbstractTextEditor) )
-        	           return;
-        	        ITextEditor editor = (ITextEditor)part;
-        	        IDocumentProvider dp = editor.getDocumentProvider();
-        	        IDocument doc = dp.getDocument(editor.getEditorInput());
-        	        ITextSelection selection =
-        	        	(ITextSelection) editor.getSelectionProvider().getSelection();
-        			try {
-        				int offset = selection.getOffset(); //doc.getLineOffset(doc.getNumberOfLines()-4);
-        	            doc.replace(offset, 0, insertText);
-        	            editor.selectAndReveal( offset+insertText.length(), 0 );
-        	            //editor.setHighlightRange( offset+insertText.length(), 0, true );
-        			} catch (BadLocationException e) {
-        				// TODO Auto-generated catch block
-        				e.printStackTrace();
-        			}
-        	 }
-        });
+		TextInsertOp op = new TextInsertOp( window, insertText, previousInserts, context );
+        Display.getDefault().asyncExec( op );
 	}
 
 	@Override
@@ -147,14 +123,8 @@ public class SpeechListener implements Runnable, ResultListener {
 
 	@Override
 	public void newResult(Result result) {
-		String text = result.getBestFinalResultNoFiller(); 
-		
-		System.out.println( "Hypothesis: " + text );
-		// FIXME: handle this better
-		if ( text.length() > 0 && !text.equals("stop listening") ) {
-			insertText( window, text );
-		}
-		
+		// FIXME: should this ever happen?
+		assert( false );
 	}
 
 	public URL getAudioURL() {
@@ -163,5 +133,35 @@ public class SpeechListener implements Runnable, ResultListener {
 
 	public void setAudioURL(URL audioURL) {
 		this.audioURL = audioURL;
+	}
+
+	@Override
+	public String newResult(Result result, DialogNode context, String tag) {
+		// FIXME: handle null better
+		String text = (result == null) ? "" : result.getBestFinalResultNoFiller(); 
+		
+		String newTag;
+		
+		if ( tag == null || tag.equals("exit") ) {
+			newTag = tag;
+		} else if ( tag.equals("correction") ) {
+			TextInsertion lastInsertion = previousInserts.pop();
+			TextCorrectionOp op = new TextCorrectionOp( window, lastInsertion );
+	        Display.getDefault().asyncExec( op );
+	        if ( lastInsertion.context == previousInserts.peek().context ) {
+	        	newTag = "";
+	        } else {
+	        	newTag = "out";
+	        }
+	        	
+		} else {
+			System.out.println( "Hypothesis: " + text );
+			if ( text.length() > 0 ) {
+				insertText( text, context );
+			}
+			newTag = tag;
+		}
+		
+		return newTag;
 	}
 }
