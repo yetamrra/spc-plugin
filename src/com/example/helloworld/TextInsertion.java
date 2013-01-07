@@ -12,6 +12,7 @@ public class TextInsertion
 	{
 		this.offset = offset;
 		this.length = length;
+		this.context = context;
 	}
 	
 	public String toString()

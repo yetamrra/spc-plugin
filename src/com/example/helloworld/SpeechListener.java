@@ -33,7 +33,6 @@ public class SpeechListener implements Runnable, SLResultListener {
 		this.window = w;
 		this.configFile = config;
 		this.setAudioURL(null);
-		this.previousInserts = new Stack<TextInsertion>();	// new one every time even though it's static
 		
 		try {
 			String filePath = "lib/" + configFile;
@@ -73,6 +72,8 @@ public class SpeechListener implements Runnable, SLResultListener {
 	        }
 
             System.out.println("Running  ...");
+    		this.previousInserts = new Stack<TextInsertion>();	// new one every time even though it's static
+            DialogManager.clearSavedStates();
             dialogManager.go();
             System.out.println("Cleaning up  ...");
 			dialogManager.deallocate();
@@ -111,7 +112,8 @@ public class SpeechListener implements Runnable, SLResultListener {
 		
         //IWorkbench wb = PlatformUI.getWorkbench();
         //IWorkbenchWindow win = wb.getActiveWorkbenchWindow();
-		TextInsertOp op = new TextInsertOp( window, insertText, previousInserts, context );
+		int depth = DialogManager.getSavedStates().size() - 1;
+		TextInsertOp op = new TextInsertOp( window, insertText, previousInserts, context, depth );
         Display.getDefault().asyncExec( op );
 	}
 
@@ -144,6 +146,7 @@ public class SpeechListener implements Runnable, SLResultListener {
 		
 		if ( tag == null || tag.equals("exit") ) {
 			newTag = tag;
+			
 		} else if ( tag.equals("correction") ) {
 			TextInsertion lastInsertion = previousInserts.pop();
 			TextCorrectionOp op = new TextCorrectionOp( window, lastInsertion );

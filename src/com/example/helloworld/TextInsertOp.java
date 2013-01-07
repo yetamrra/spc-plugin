@@ -20,13 +20,15 @@ public class TextInsertOp implements Runnable
 	private String insertText;
 	private Stack<TextInsertion> previousInserts;
 	private DialogNode context;
+	private int depth;
 	
-	public TextInsertOp( IWorkbenchWindow window, String insertText, Stack<TextInsertion> previousInserts, DialogNode context )
+	public TextInsertOp( IWorkbenchWindow window, String insertText, Stack<TextInsertion> previousInserts, DialogNode context, int depth )
 	{
 		this.window = window;
 		this.insertText = insertText;
 		this.previousInserts = previousInserts;
 		this.context = context;
+		this.depth = depth;
 	}
 	
 	@Override
@@ -43,6 +45,12 @@ public class TextInsertOp implements Runnable
 				(ITextSelection) editor.getSelectionProvider().getSelection();
 		try {
 			int offset = selection.getOffset(); //doc.getLineOffset(doc.getNumberOfLines()-4);
+			StringBuilder b = new StringBuilder();
+			for ( int i=0; i<depth; i++ ) {
+				b.append( "  " );
+			}
+			b.append( insertText );
+			insertText = b.toString();
 			doc.replace(offset, selection.getLength(), insertText);
 			editor.selectAndReveal( offset+insertText.length(), 0 );
 			TextInsertion t = new TextInsertion( offset, insertText.length(), context );

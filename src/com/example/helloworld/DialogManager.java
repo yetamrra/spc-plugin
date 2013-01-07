@@ -289,6 +289,16 @@ public class DialogManager implements Configurable {
 		this.resultListeners.add(listener);
 	}
 
+	public static Stack<DialogNode> getSavedStates()
+	{
+		return savedStates;
+	}
+	
+	public static void clearSavedStates()
+	{
+		savedStates = new Stack<DialogNode>();
+	}
+	
 	/**
 	 * Represents a node in the dialog
 	 */
@@ -306,7 +316,7 @@ public class DialogManager implements Configurable {
 		 *            the application behavor for the node
 		 * 
 		 */
-		DialogNode(String name, DialogNodeBehavior behavior) {
+		DialogNode(String name, DialogNodeBehavior behavior ) {
 			this.behavior = behavior;
 			this.name = name;
 		}
@@ -390,6 +400,11 @@ public class DialogManager implements Configurable {
 
 		public DialogManager getDialogManager() {
 			return DialogManager.this;
+		}
+		
+		public String toString()
+		{
+			return getName();
 		}
 	}
 }
