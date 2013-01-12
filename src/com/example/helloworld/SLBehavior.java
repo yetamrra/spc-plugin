@@ -80,6 +80,7 @@ class SLBehavior extends NewGrammarDialogNodeBehavior {
             }
         } else {
             System.out.println("\n Oops! didn't hear you.\n");
+            SpeechManager.getManager().setHypothesis( "*error*", false );
         }
         return null;
     }

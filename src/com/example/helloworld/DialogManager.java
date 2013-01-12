@@ -165,6 +165,8 @@ public class DialogManager implements Configurable {
 
 		try {
 			if (microphone == null || microphone.startRecording()) {
+	            SpeechManager.getManager().setListening( true );
+
 				while (true) {
 
 					if (curNode != lastNode) {
@@ -173,6 +175,7 @@ public class DialogManager implements Configurable {
 						}
 						curNode.enter();
 						lastNode = curNode;
+			            SpeechManager.getManager().setContext( curNode.getName() );
 					}
 					String nextStateName = curNode.recognize();
 					if (nextStateName == null || nextStateName.isEmpty()) {
@@ -199,6 +202,7 @@ public class DialogManager implements Configurable {
 							savedStates.push( node );
 							curNode = node;
 							System.out.println( "New context: " + savedStates );
+				            SpeechManager.getManager().setContext( node.getName() );
 						}
 					}
 				}
@@ -211,6 +215,8 @@ public class DialogManager implements Configurable {
 			error("problem loading grammar in state " + curNode.getName() + ' '
 					+ ioe);
 		}
+		
+        SpeechManager.getManager().setListening( false );
 	}
 
 	/**

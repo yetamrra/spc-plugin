@@ -140,14 +140,28 @@ public class SpeechListener implements Runnable, SLResultListener {
 	@Override
 	public String newResult(Result result, DialogNode context, String tag) {
 		// FIXME: handle null better
-		String text = (result == null) ? "" : result.getBestFinalResultNoFiller(); 
+		if ( result == null ) {
+			return "exit";
+		}
 		
+		boolean isFinal = result.isFinal();
+		String hyp = result.getBestResultNoFiller();
+		String text = (result == null) ? "" : result.getBestFinalResultNoFiller();
+		
+		if ( !isFinal || !text.equals(hyp) || text.equals("")) {
+            SpeechManager.getManager().setHypothesis( hyp, false );
+		} else {
+			SpeechManager.getManager().setHypothesis( text, true );
+		}
+		String nnTag = (tag == null) ? "" : tag;
+		System.out.println( (isFinal ? "Final" : "Intermediate") + " hypothesis: " + text );
+
 		String newTag;
 		
-		if ( tag == null || tag.equals("exit") ) {
-			newTag = tag;
+		if ( nnTag.equals("exit") ) {
+			newTag = "exit";
 			
-		} else if ( tag.equals("correction") ) {
+		} else if ( nnTag.equals("correction") ) {
 			TextInsertion lastInsertion = previousInserts.pop();
 			TextCorrectionOp op = new TextCorrectionOp( window, lastInsertion );
 	        Display.getDefault().asyncExec( op );
@@ -158,7 +172,6 @@ public class SpeechListener implements Runnable, SLResultListener {
 	        }
 	        	
 		} else {
-			System.out.println( "Hypothesis: " + text );
 			if ( text.length() > 0 ) {
 				insertText( text, context );
 			}
