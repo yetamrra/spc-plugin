@@ -85,7 +85,7 @@ public class SpeechListener implements Runnable, SLResultListener {
 		return;
 	}
 
-	private void insertText( String resultText, DialogNode context )
+	private void insertText( String resultText, DialogNode context, String tag )
 	{
 		if ( resultText.length() == 0 ) {
 			return;
@@ -113,6 +113,9 @@ public class SpeechListener implements Runnable, SLResultListener {
         //IWorkbench wb = PlatformUI.getWorkbench();
         //IWorkbenchWindow win = wb.getActiveWorkbenchWindow();
 		int depth = DialogManager.getSavedStates().size() - 1;
+		if ( tag != null && tag.equals("out") ) {
+			depth--;
+		}
 		TextInsertOp op = new TextInsertOp( window, insertText, previousInserts, context, depth );
         Display.getDefault().asyncExec( op );
 	}
@@ -148,7 +151,7 @@ public class SpeechListener implements Runnable, SLResultListener {
 		String hyp = result.getBestResultNoFiller();
 		String text = (result == null) ? "" : result.getBestFinalResultNoFiller();
 		
-		if ( !isFinal || !text.equals(hyp) || text.equals("")) {
+		if ( !isFinal || !text.equals(hyp) || text.equals("") ) {
             SpeechManager.getManager().setHypothesis( hyp, false );
 		} else {
 			SpeechManager.getManager().setHypothesis( text, true );
@@ -162,18 +165,22 @@ public class SpeechListener implements Runnable, SLResultListener {
 			newTag = "exit";
 			
 		} else if ( nnTag.equals("correction") ) {
-			TextInsertion lastInsertion = previousInserts.pop();
-			TextCorrectionOp op = new TextCorrectionOp( window, lastInsertion );
-	        Display.getDefault().asyncExec( op );
-	        if ( lastInsertion.context == previousInserts.peek().context ) {
-	        	newTag = "";
-	        } else {
-	        	newTag = "out";
-	        }
+			if ( previousInserts.size() > 0 ) {
+				TextInsertion lastInsertion = previousInserts.pop();
+				TextCorrectionOp op = new TextCorrectionOp( window, lastInsertion );
+		        Display.getDefault().asyncExec( op );
+		        if ( previousInserts.size() == 0 || lastInsertion.context == previousInserts.peek().context ) {
+		        	newTag = "";
+		        } else {
+		        	newTag = "out";
+		        }
+			} else {
+				newTag = "";
+			}
 	        	
 		} else {
 			if ( text.length() > 0 ) {
-				insertText( text, context );
+				insertText( text, context, tag );
 			}
 			newTag = tag;
 		}
