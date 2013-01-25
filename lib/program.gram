@@ -8,6 +8,7 @@ grammar program;
 
 public <program> = <function> {goto_function}
 				 | stop listening {exit}
+				 | start over {reset}
 				 ;
 
 <function> = define function <id> taking no arguments as 

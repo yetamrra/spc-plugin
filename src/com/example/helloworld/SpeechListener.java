@@ -177,7 +177,10 @@ public class SpeechListener implements Runnable, SLResultListener {
 			} else {
 				newTag = "";
 			}
-	        	
+	      
+		} else if ( nnTag.equals("reset") ) {
+			newTag = "reset";
+			
 		} else {
 			if ( text.length() > 0 ) {
 				insertText( text, context, tag );

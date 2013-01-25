@@ -77,6 +77,8 @@ class SLBehavior extends NewGrammarDialogNodeBehavior {
             	return "out";
             } else if ( tag.equals("correction") ) {
             	return "correction";
+            } else if (tag.equals("reset") ) {
+            	return "reset";
             }
         } else {
             System.out.println("\n Oops! didn't hear you.\n");

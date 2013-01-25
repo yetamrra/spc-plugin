@@ -193,6 +193,12 @@ public class DialogManager implements Configurable {
 						// same as "out" or the same as ""
 						// FIXME: Do we need to do anything after all?
 						assert ( false );
+					} else if ( nextStateName.equals("reset") ) {
+						// Clear our state and start over
+						savedStates.clear();
+						curNode = initialNode;
+						savedStates.push( curNode );
+						SpeechManager.getManager().setContext( curNode.getName() );
 					} else {
 						DialogNode node = nodeMap.get(nextStateName);
 						if (node == null) {

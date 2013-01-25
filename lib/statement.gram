@@ -15,6 +15,7 @@ public <standard_statements> = <statement>+;
 			| <ifFrags>
 			| <correction>
 			| stop listening {exit}
+			| start over {reset}
 			;
 	
 <assignment> = Set <id> to <expression>;
