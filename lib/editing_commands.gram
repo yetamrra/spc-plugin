@@ -1,0 +1,16 @@
+#JSGF V1.0;
+
+/**
+ * JSGF Grammar for Hello World example
+ */
+
+grammar editing_commands;
+
+public <editing_commands> = <statement>+;
+
+<statement> = stop listening {exit}
+			| start over {reset}
+			| <correction>
+			;
+
+<correction> = (fix that | no) {correction} ;

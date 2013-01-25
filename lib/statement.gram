@@ -43,5 +43,3 @@ public <standard_statements> = <statement>+;
 <number> = zero | one | two | three | four | five | six | seven | eight | nine | ten;
 
 <id> = X | Y | Z | A | B | C | F | G | M | N | main;
-
-<correction> = (fix that | no) {correction} ;
