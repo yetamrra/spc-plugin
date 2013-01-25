@@ -13,9 +13,6 @@ public <standard_statements> = <statement>+;
 			| return <expression>
 			| <whileFrags>
 			| <ifFrags>
-			| <correction>
-			| stop listening {exit}
-			| start over {reset}
 			;
 	
 <assignment> = Set <id> to <expression>;

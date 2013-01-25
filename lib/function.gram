@@ -7,9 +7,11 @@
 grammar function;
 
 import <statement.standard_statements>;
+import <editing_commands.editing_commands>;
 
 public <function> = <statement>+ ;
 
 <statement> = end function {out}
 			| <standard_statements>
+			| <editing_commands>
 			;
