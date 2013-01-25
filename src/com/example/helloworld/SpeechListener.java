@@ -179,6 +179,9 @@ public class SpeechListener implements Runnable, SLResultListener {
 			}
 	      
 		} else if ( nnTag.equals("reset") ) {
+            TextClearOp op = new TextClearOp( window );
+            Display.getDefault().asyncExec( op );
+
 			newTag = "reset";
 			
 		} else {

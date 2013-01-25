@@ -209,7 +209,7 @@ public class DialogManager implements Configurable {
 							curNode = node;
 							System.out.println( "New context: " + savedStates );
 				            SpeechManager.getManager().setContext( node.getName() );
-						}
+				        }
 					}
 				}
 			} else {
