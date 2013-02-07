@@ -15,7 +15,9 @@ public <standard_statements> = <statement>+;
 			| <ifFrags>
 			;
 	
-<assignment> = Set <id> to <expression>;
+<assignment> = Set <id> to <expression>
+			 | Set <arrayRef> to <expression>
+			 ;
 
 <printFrags> = print <expression>
              | new line
@@ -31,11 +33,13 @@ public <standard_statements> = <statement>+;
 
 <boolop> = less than | greater than | equals | not equals ;
 
-<expression> = <number> | <id> | <callExprFrags>; 
+<expression> = <number> | <id> | <callExprFrags> | <arrayRef>; 
 
 <callExprFrags> = the result of calling <id>
                 | <withFrags>
                 ;
+
+<arrayRef> = element (<number> | <id>) of <id> ;
 
 <withFrags> = with <expression> (and <expression>)*
             ;
