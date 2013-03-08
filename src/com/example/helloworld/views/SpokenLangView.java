@@ -137,6 +137,9 @@ public class SpokenLangView extends ViewPart
 		gridData.horizontalAlignment = GridData.FILL;
 		gridData.grabExcessHorizontalSpace = true;
 		listenStatus.setLayoutData( gridData );
+		Display display = Display.getDefault();
+		Color textColor = display.getSystemColor(SWT.COLOR_RED);
+		listenStatus.setForeground( textColor );
 		
 		label = new Label( parent, SWT.RIGHT );
 		label.setText( "Context:" );
@@ -191,11 +194,13 @@ public class SpokenLangView extends ViewPart
 	public void updateStateSafe()
 	{
 		SpeechManager sm = SpeechManager.getManager();
+		Display display = Display.getDefault();
 		listenStatus.setText( sm.isListening() ? "Listening" : "Not Listening" );
+		Color textColor = sm.isListening() ? display.getSystemColor(SWT.COLOR_GREEN) : display.getSystemColor(SWT.COLOR_RED);
+		listenStatus.setForeground( textColor );
 		currentContext.setText( sm.getContext() );
 		currentHypothesis.setText( sm.getHypothesis() );
-		Display display = Display.getDefault();
-		Color textColor = sm.isFinal() ? display.getSystemColor(SWT.COLOR_GREEN) : display.getSystemColor(SWT.COLOR_RED);
+		textColor = sm.isFinal() ? display.getSystemColor(SWT.COLOR_GREEN) : display.getSystemColor(SWT.COLOR_RED);
 		currentHypothesis.setForeground( textColor );
 	}
 	
