@@ -29,10 +29,11 @@
    					commandId="com.example.helloworld.commands.startDictation"
    					id="com.example.helloworld.menus.startDictationMenu"
    					icon="icons/microphone.png" />
-   				<command 
-   					commandId="com.example.helloworld.commands.processAudioFile"
-   					id="com.example.helloworld.menus.processAudioFileMenu"
-   					icon="icons/audio.png" />
+   				<command
+             commandId="com.example.helloworld.commands.processAudioFile"
+             icon="icons/audio.png"
+             id="com.example.helloworld.menus.processAudioFileMenu">
+       </command>
    			</menu>
    		</menuContribution>
    		<menuContribution locationURI="toolbar:org.eclipse.ui.main.toolbar?after=additions">
@@ -53,8 +54,26 @@
    			commandId="com.example.helloworld.commands.startDictation"
    			class="com.example.helloworld.handlers.StartDictation" />
    		<handler
-   			commandId="com.example.helloworld.commands.processAudioFile"
-   			class="com.example.helloworld.handlers.ProcessAudioFile" />
+           class="com.example.helloworld.handlers.ProcessAudioFile"
+           commandId="com.example.helloworld.commands.processAudioFile">
+        <enabledWhen>
+           <with
+                 variable="selection">
+              <and>
+                 <count
+                       value="1">
+                 </count>
+                 <iterate
+                       ifEmpty="false"
+                       operator="and">
+                    <test
+                          property="com.example.helloworld.isWav">
+                    </test>
+                 </iterate>
+              </and>
+           </with>
+        </enabledWhen>
+     </handler>
    </extension>
    <extension
       id="SpokenBuilder" name="Spoken Compiler Builder" point="org.eclipse.core.resources.builders">
@@ -101,5 +120,15 @@
             id="com.example.helloworld.views.SpokenLangView"
             name="Spoken Programming">
       </view>
+   </extension>
+   <extension
+         point="org.eclipse.core.expressions.propertyTesters">
+      <propertyTester
+            class="com.example.helloworld.propertyTester.WavPropertyTester"
+            id="com.example.helloworld.wavPropertyTester"
+            namespace="com.example.helloworld"
+            properties="isWav, notWav"
+            type="java.lang.Object">
+      </propertyTester>
    </extension>
 </plugin>
