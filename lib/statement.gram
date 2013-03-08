@@ -13,6 +13,7 @@ public <standard_statements> = <statement>+;
 			| return <expression>
 			| <whileFrags>
 			| <ifFrags>
+			| <inputFrags>
 			;
 	
 <assignment> = Set <id> to <expression>
@@ -23,6 +24,10 @@ public <standard_statements> = <statement>+;
 			 | print space
              | new line
              ;
+
+<inputFrags> = read <id>
+			 | read <arrayRef>
+			 ;
 
 <whileFrags> = while <boolExpr> do {goto_while}
 			 ;
