@@ -20,6 +20,7 @@ public class SpeechManager
 	private String currentContext;
 	private boolean listening;
 	private boolean finalHypothesis;
+	private SpeechListener listener;
 	
 	private SpeechManager()
 	{
@@ -28,6 +29,7 @@ public class SpeechManager
 		currentContext = "";
 		listening = false;
 		finalHypothesis = false;
+		listener = null;
 	}
 	
 	public void setView( SpokenLangView view )
@@ -83,5 +85,13 @@ public class SpeechManager
 		if ( view != null ) {
 			view.updateState();
 		}		
+	}
+
+	public SpeechListener getListener() {
+		return listener;
+	}
+
+	public void setListener(SpeechListener listener) {
+		this.listener = listener;
 	}
 }

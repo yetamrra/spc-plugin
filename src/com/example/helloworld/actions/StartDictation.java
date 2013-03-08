@@ -6,6 +6,7 @@ import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.IWorkbenchWindowActionDelegate;
 
 import com.example.helloworld.SpeechListener;
+import com.example.helloworld.SpeechManager;
 
 /**
  * Our sample action implements workbench action delegate.
@@ -15,12 +16,12 @@ import com.example.helloworld.SpeechListener;
  * delegated to it.
  * @see IWorkbenchWindowActionDelegate
  */
-public class SampleAction implements IWorkbenchWindowActionDelegate {
+public class StartDictation implements IWorkbenchWindowActionDelegate {
 	private IWorkbenchWindow window;
 	/**
 	 * The constructor.
 	 */
-	public SampleAction() {
+	public StartDictation() {
 	}
 
 	/**
@@ -31,6 +32,7 @@ public class SampleAction implements IWorkbenchWindowActionDelegate {
 	 */
 	public void run(IAction action) {
 		SpeechListener l = new SpeechListener( window, "helloworld.config.xml" );
+		SpeechManager.getManager().setListener( l );
 		Thread t = new Thread( l );
 		t.start();
 	}

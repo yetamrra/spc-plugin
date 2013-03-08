@@ -1,40 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<?eclipse version="3.4"?>
+<?eclipse version="4.2"?>
 <plugin>
-   <extension
-         point="org.eclipse.ui.actionSets">
-      <actionSet
-            label="Sample Action Set"
-            visible="true"
-            id="com.example.helloworld.actionSet">
-         <menu
-               label="Spoken &amp;LanguageMenu"
-               id="sampleMenu">
-            <separator
-                  name="sampleGroup">
-            </separator>
-         </menu>
-         <action
-               label="&amp;Start Dictation"
-               icon="icons/microphone.png"
-               class="com.example.helloworld.actions.SampleAction"
-               tooltip="Start Speech Listener"
-               menubarPath="sampleMenu/sampleGroup"
-               toolbarPath="sampleGroup"
-               id="com.example.helloworld.actions.SampleAction">
-         </action>
-         <action
-               label="&amp;Process Audio File"
-               icon="icons/audio.png"
-               class="com.example.helloworld.actions.ProcessAudioFile"
-               tooltip="Process the selected audio file"
-               menubarPath="sampleMenu/sampleGroup"
-               toolbarPath="sampleGroup"
-               id="com.example.helloworld.actions.ProcessAudioFile"
-               enablesFor="1">
-         </action>
-      </actionSet>
-   </extension>
    <extension point="org.eclipse.ui.commands">
    		<category
    			name="Spoken Compiler"
@@ -45,6 +11,50 @@
    			name="Compile"
    			description="Compile the current file"
    			id="com.example.helloworld.commands.compile" />
+   		<command
+   			categoryId="com.example.helloworld.commands.category"
+   			name="Process Audio File"
+   			description="Process the selected wav file as speech input"
+   			id="com.example.helloworld.commands.processAudioFile" />
+   		<command
+   			categoryId="com.example.helloworld.commands.category"
+   			name="Start Dictation"
+   			description="Start Dictating a Program"
+   			id="com.example.helloworld.commands.startDictation" />
+   </extension>
+   <extension point="org.eclipse.ui.menus">
+   		<menuContribution locationURI="menu:org.eclipse.ui.main.menu?after=additions">
+   			<menu id="com.example.helloworld.menus.spokenProgramMenu" label="Spoken Programming">
+   				<command 
+   					commandId="com.example.helloworld.commands.startDictation"
+   					id="com.example.helloworld.menus.startDictationMenu"
+   					icon="icons/microphone.png" />
+   				<command 
+   					commandId="com.example.helloworld.commands.processAudioFile"
+   					id="com.example.helloworld.menus.processAudioFileMenu"
+   					icon="icons/audio.png" />
+   			</menu>
+   		</menuContribution>
+   		<menuContribution locationURI="toolbar:org.eclipse.ui.main.toolbar?after=additions">
+   			<toolbar id="com.example.helloworld.toolbars.spokenProgram" label="Spoken Programming">
+   				<command 
+   					commandId="com.example.helloworld.commands.startDictation"
+   					id="com.example.helloworld.toolbars.startDictation"
+   					icon="icons/microphone.png" />
+   				<command 
+   					commandId="com.example.helloworld.commands.processAudioFile"
+   					id="com.example.helloworld.menus.processAudioFileMenu"
+   					icon="icons/audio.png" />
+   			</toolbar>
+   		</menuContribution>
+   </extension>
+   <extension point="org.eclipse.ui.handlers">
+   		<handler
+   			commandId="com.example.helloworld.commands.startDictation"
+   			class="com.example.helloworld.handlers.StartDictation" />
+   		<handler
+   			commandId="com.example.helloworld.commands.processAudioFile"
+   			class="com.example.helloworld.handlers.ProcessAudioFile" />
    </extension>
    <extension
       id="SpokenBuilder" name="Spoken Compiler Builder" point="org.eclipse.core.resources.builders">

@@ -103,7 +103,7 @@ public class DialogManager implements Configurable {
 
 	/**
 	 * Adds a new node to the dialog manager. The dialog manager maintains a set
-	 * of dialog nodes. When a new node is added the application specific beh
+	 * of dialog nodes. When a new node is added the application specific behavior
 	 * 
 	 * @param name
 	 *            the name of the node
