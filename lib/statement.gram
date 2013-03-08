@@ -31,7 +31,7 @@ public <standard_statements> = <statement>+;
 
 <boolExpr> = <expression> <boolop> <expression> ;
 
-<boolop> = less than | greater than | equals | not equals ;
+<boolop> = less than | greater than | equals | not equals | less than or equal to | greater than or equal to;
 
 <expression> = <number> | <id> | <callExprFrags> | <arrayRef> | <string> ; 
 
