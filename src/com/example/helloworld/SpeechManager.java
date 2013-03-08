@@ -94,4 +94,13 @@ public class SpeechManager
 	public void setListener(SpeechListener listener) {
 		this.listener = listener;
 	}
+	
+	public void stopListener()
+	{
+		if ( listener == null ) {
+			return;
+		}
+		
+		// FIXME: Stop the listener
+	}
 }
