@@ -1,15 +1,15 @@
 #JSGF V1.0;
 
 /**
- * JSGF Grammar for while blocks.
+ * JSGF Grammar for if blocks.
  */
 
-grammar function;
+grammar if_block;
 
 import <statement.standard_statements>;
 import <editing_commands.editing_commands>;
 
-public <function> = <statement>+ ;
+public <if_block> = <statement>+ ;
 
 <statement> = else {goto_else}
 			| <standard_statements>

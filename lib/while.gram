@@ -4,12 +4,12 @@
  * JSGF Grammar for while blocks.
  */
 
-grammar function;
+grammar while_block;
 
 import <statement.standard_statements>;
 import <editing_commands.editing_commands>;
 
-public <function> = <statement>+ ;
+public <while_block> = <statement>+ ;
 
 <statement> = end while {out}
 			| <standard_statements>
