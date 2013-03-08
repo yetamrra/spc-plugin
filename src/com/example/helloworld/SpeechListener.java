@@ -48,6 +48,7 @@ public class SpeechListener implements Runnable, SLResultListener {
 	        dialogManager.addNode( "while", new SLBehavior() );
 	        dialogManager.addNode( "if", new SLBehavior() );
 	        dialogManager.addNode( "else", new SLBehavior() );
+	        dialogManager.addNode( "string", new SLBehavior() );
 	        
 	        dialogManager.setInitialNode("program");
 

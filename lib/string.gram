@@ -1,0 +1,13 @@
+#JSGF V1.0;
+
+/**
+ * JSGF Grammar for strings.
+ */
+
+grammar string;
+
+public <string> = <any_words> ;
+
+<any_words> = (Hello World) {out} 
+			| (Hello) {out}
+			;
