@@ -33,7 +33,7 @@ public <standard_statements> = <statement>+;
 
 <boolop> = less than | greater than | equals | not equals ;
 
-<expression> = <number> | <id> | <callExprFrags> | <arrayRef>; 
+<expression> = <number> | <id> | <callExprFrags> | <arrayRef> ; 
 
 <callExprFrags> = the result of calling <id>
                 | <withFrags>
@@ -46,4 +46,4 @@ public <standard_statements> = <statement>+;
 
 <number> = zero | one | two | three | four | five | six | seven | eight | nine | ten;
 
-<id> = X | Y | Z | A | B | C | F | G | M | N | main;
+<id> = X | Y | Z | A | B | C | D | F | G | I | J | K | L | M | N | P | Q | main |  sort | min | max | average | fib | fibonacci | factorial | short;
