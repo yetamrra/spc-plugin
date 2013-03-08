@@ -81,6 +81,7 @@ class SLBehavior extends NewGrammarDialogNodeBehavior {
             	return "reset";
             }
         } else {
+            java.awt.Toolkit.getDefaultToolkit().beep();
             System.out.println("\n Oops! didn't hear you.\n");
             SpeechManager.getManager().setHypothesis( "*error*", false );
         }
