@@ -9,9 +9,9 @@ grammar if_block;
 import <statement.standard_statements>;
 import <editing_commands.editing_commands>;
 
-public <if_block> = <statement>+ ;
+public <if_block> = <statement> ;
 
-<statement> = else {goto_else}
+<statement> = else {goto_else_block}
 			| <standard_statements>
 			| <editing_commands>
 			;

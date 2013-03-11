@@ -6,7 +6,7 @@
 
 grammar editing_commands;
 
-public <editing_commands> = <statement>+;
+public <editing_commands> = <statement>;
 
 <statement> = stop listening {exit}
 			| start over {reset}

@@ -1,4 +1,4 @@
-#JSGF V1.0;
+¨#JSGF V1.0;
 
 /**
  * JSGF Grammar for else blocks.
@@ -9,7 +9,7 @@ grammar else_block;
 import <statement.standard_statements>;
 import <editing_commands.editing_commands>;
 
-public <else_block> = <statement>+ ;
+public <else_block> = <statement> ;
 
 <statement> = end if {out}
 			| <standard_statements>

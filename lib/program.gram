@@ -17,6 +17,6 @@ public <program> = <function> {goto_function}
 	
 <number> = zero | one | two | three | four | five | six | seven | eight | nine | ten;
 
-<id> = X | Y | Z | A | B | C | D | F | G | I | J | K | L | M | N | P | Q | main | sort | min | max | average | fact;
+<id> = X | Y | Z | A | B | C | D | F | G | I | J | K | L | M | N | P | Q | main | sort | fact;
 
 	
