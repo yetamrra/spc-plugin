@@ -44,8 +44,7 @@ public <standard_statements> = <statement>;
 
 <atom> = <number> | <id> | <callExprFrags> | <arrayRef> | <string> ; 
 
-<callExprFrags> = the result of calling <id>
-                | <withFrags>
+<callExprFrags> = the result of calling <id> [ <withFrags> ]
                 ;
 
 <arrayRef> = element (<number> | <id>) of <id> ;
