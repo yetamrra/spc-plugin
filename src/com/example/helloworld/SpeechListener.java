@@ -110,6 +110,11 @@ public class SpeechListener implements Runnable, SLResultListener {
 		tmp = tmp.replaceAll( "\\bgreater than\\b", ">" );
 		tmp = tmp.replaceAll( "\\bnot equals\\b", "!=" );
 		tmp = tmp.replaceAll( "\\bequals\\b", "=" );
+		tmp = tmp.replaceAll( "\\bplus\\b", "+" );
+		tmp = tmp.replaceAll( "\\bminus\\b", "-" );
+		tmp = tmp.replaceAll( "\\btimes\\b", "*" );
+		tmp = tmp.replaceAll( "\\bdivided by\\b", "/" );
+		tmp = tmp.replaceAll( "\\bover\\b", "/" );
 		
 		String insertText = tmp + " \n";
 		

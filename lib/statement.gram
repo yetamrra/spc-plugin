@@ -6,7 +6,7 @@
 
 grammar statement;
 
-public <standard_statements> = <statement>+;
+public <standard_statements> = <statement>;
 
 <statement> = <assignment>
 			| <printFrags>
@@ -39,7 +39,10 @@ public <standard_statements> = <statement>+;
 
 <boolop> = less than | greater than | equals | not equals | less than or equal to | greater than or equal to;
 
-<expression> = <number> | <id> | <callExprFrags> | <arrayRef> | <string> ; 
+<expression> = <atom> [ (plus | minus | times | divided by | over) <atom> ]
+             ;
+
+<atom> = <number> | <id> | <callExprFrags> | <arrayRef> | <string> ; 
 
 <callExprFrags> = the result of calling <id>
                 | <withFrags>
