@@ -16,8 +16,8 @@ public class StartDictation extends AbstractHandler
 	{
 		IWorkbenchWindow window = HandlerUtil.getActiveWorkbenchWindow(event);
 		SpeechListener l = new SpeechListener( window, "helloworld.config.xml" );
-		SpeechManager.getManager().setListener( l );
 		Thread t = new Thread( l );
+		SpeechManager.getManager().setListener( l, t );
 		t.start();
 		return null;
 	}

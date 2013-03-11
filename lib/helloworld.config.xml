@@ -51,6 +51,7 @@
 
     <component name="decoder" type="edu.cmu.sphinx.decoder.Decoder">
         <property name="searchManager" value="searchManager"/>
+        <!-- <property name="featureBlockSize" value="10"/> -->
     </component>
 
     <component name="searchManager"

@@ -23,6 +23,7 @@ import java.util.logging.Logger;
 import javax.speech.recognition.GrammarException;
 import edu.cmu.sphinx.decoder.ResultListener;
 
+import edu.cmu.sphinx.frontend.DataProcessingException;
 import edu.cmu.sphinx.frontend.util.Microphone;
 import edu.cmu.sphinx.jsgf.JSGFGrammar;
 import edu.cmu.sphinx.jsgf.JSGFGrammarException;
@@ -177,7 +178,15 @@ public class DialogManager implements Configurable {
 						lastNode = curNode;
 			            SpeechManager.getManager().setContext( curNode.getName() );
 					}
+					if ( Thread.interrupted() ) {
+						System.out.println( "Listening canceled" );
+						return;
+					}
 					String nextStateName = curNode.recognize();
+					if ( Thread.interrupted() ) {
+						System.out.println( "Listening canceled" );
+						return;
+					}
 					if (nextStateName == null || nextStateName.isEmpty()) {
 						continue;
 					} else if ( nextStateName.equals("exit") ) {
@@ -220,9 +229,15 @@ public class DialogManager implements Configurable {
 		} catch (IOException ioe) {
 			error("problem loading grammar in state " + curNode.getName() + ' '
 					+ ioe);
+		} catch ( DataProcessingException e ) {
+			if ( e.getCause() instanceof InterruptedException ) {
+				System.out.println( "Listening canceled" );
+			} else {
+				error("problem processing data in state " + curNode.getName() + ": " + e );
+			}
+		} finally {
+			SpeechManager.getManager().setListening( false );
 		}
-		
-        SpeechManager.getManager().setListening( false );
 	}
 
 	/**

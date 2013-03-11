@@ -21,6 +21,8 @@ public class SpeechManager
 	private boolean listening;
 	private boolean finalHypothesis;
 	private SpeechListener listener;
+	private boolean canceled;
+	private Thread listenerThread;
 	
 	private SpeechManager()
 	{
@@ -30,6 +32,8 @@ public class SpeechManager
 		listening = false;
 		finalHypothesis = false;
 		listener = null;
+		canceled = false;
+		listenerThread = null;
 	}
 	
 	public void setView( SpokenLangView view )
@@ -91,8 +95,10 @@ public class SpeechManager
 		return listener;
 	}
 
-	public void setListener(SpeechListener listener) {
+	public void setListener(SpeechListener listener, Thread t) {
 		this.listener = listener;
+		this.listenerThread = t;
+		canceled = false;
 	}
 	
 	public void stopListener()
@@ -101,6 +107,22 @@ public class SpeechManager
 			return;
 		}
 		
-		// FIXME: Stop the listener
+		listener = null;
+		canceled = true;
+		if ( listenerThread.isAlive() ) {
+			try {
+				listenerThread.interrupt();
+			} catch (SecurityException e) {
+			}
+		} else {
+			setListening( false );
+		}
+		System.out.println( "Listener thread canceled" );
+		listenerThread = null;
+	}
+	
+	public boolean isCanceled()
+	{
+		return canceled;
 	}
 }
