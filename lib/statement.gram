@@ -37,7 +37,7 @@ public <standard_statements> = <statement>;
 
 <boolExpr> = <expression> <boolop> <expression> ;
 
-<boolop> = less than | greater than | equals | not equals | less than or equal to | greater than or equal to;
+<boolop> = less than | greater than | equals | not equals | [is] less than or equal to | [is] greater than or equal to;
 
 <expression> = <atom> [ (plus | minus | times | divided by | over) <atom> ]
              ;
