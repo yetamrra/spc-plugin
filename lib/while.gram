@@ -6,63 +6,10 @@
 
 grammar while_block;
 
-public <while_block> = <statement> ;
+import <statement.standard_statements>;
+import <editing_commands.editing_commands>;
 
-<statement> = end while {out}
-			| <assignment>
-			| <printFrags>
-			| return <expression>
-			| <whileFrags>
-			| <ifFrags>
-			| <inputFrags>
-			| call <id> [ <withFrags> ]
-			| nothing
-			| stop listening {exit}
-			| start over {reset}
-			| <correction>
-			;
-	
-<correction> = (fix that | no) {correction} ;
-
-<assignment> = Set <id> to <expression>
-			 | Set <arrayRef> to <expression>
-			 ;
-
-<printFrags> = print <expression>
-			 | print space
-             | new line
-             ;
-
-<inputFrags> = read <id>
-			 | read <arrayRef>
-			 ;
-
-<whileFrags> = while <boolExpr> do {goto_while}
-			 ;
-
-<ifFrags> = if <boolExpr> then {goto_if_block}
-		  ;
-
-<boolExpr> = <atom> <boolop> <atom> ;
-
-<boolop> = less than | greater than | equals | not equals | [is] less than or equal to | [is] greater than or equal to;
-
-<expression> = <atom> 
-			 | <atom> (plus | minus | times | divided by | over) <atom>
-             ;
-
-<atom> = <number> | <id> | <callExprFrags> | <arrayRef> | <string> ; 
-
-<callExprFrags> = the result of calling <id> [ <withFrags> ]
-                ;
-
-<arrayRef> = element (<number> | <id>) of <id> ;
-
-<withFrags> = with <expression> (and <expression>)*
-            ;
-
-<number> = zero | one | two | three | four | five | six | seven | eight | nine | ten;
-
-<id> = X | Y | Z | A | B | C | D | F | G | I | J | K | L | M | N | P | Q | main | sort | min | max | average | fact | short;
-
-<string> = the string {goto_string} ;
+public <while_block> 	= end while {out}
+						| <standard_statements>
+						| <editing_commands>
+						;

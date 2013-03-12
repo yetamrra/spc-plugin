@@ -20,23 +20,6 @@ class NewGrammarDialogNodeBehavior extends DialogNodeBehavior {
      */
     public NewGrammarDialogNodeBehavior() {
     }
-
-    public void onInit(DialogManager.DialogNode node) 
-    {
-    	super.onInit(node);
-        try {
-			getGrammar().loadJSGF(getGrammarName());
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (JSGFGrammarParseException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (JSGFGrammarException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-    }
     
     /**
      * Called with the dialog manager enters this entry
