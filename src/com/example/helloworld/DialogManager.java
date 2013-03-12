@@ -206,7 +206,7 @@ public class DialogManager implements Configurable {
 						// Clear our state and start over
 						savedStates.clear();
 						curNode = initialNode;
-						savedStates.push( curNode );
+						//savedStates.push( curNode );
 						SpeechManager.getManager().setContext( curNode.getName() );
 					} else {
 						DialogNode node = nodeMap.get(nextStateName);
@@ -214,6 +214,10 @@ public class DialogManager implements Configurable {
 							warn("Can't transition to unknown state "
 									+ nextStateName);
 						} else {
+							if ( nextStateName.equals("else_block") ) {
+								savedStates.pop();
+								// else block replaces the if, not nests.
+							}
 							savedStates.push( node );
 							curNode = node;
 							System.out.println( "New context: " + savedStates );

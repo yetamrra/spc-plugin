@@ -14,7 +14,9 @@ public <standard_statements> = <statement>;
 			| <whileFrags>
 			| <ifFrags>
 			| <inputFrags>
+			| nothing
 			| call <id> [ <withFrags> ]
+			| nothing
 			;
 	
 <assignment> = Set <id> to <expression>
@@ -40,7 +42,8 @@ public <standard_statements> = <statement>;
 
 <boolop> = less than | greater than | equals | not equals | [is] less than or equal to | [is] greater than or equal to;
 
-<expression> = <atom> [ (plus | minus | times | divided by | over) <atom> ]
+<expression> = <atom> 
+			 | <atom> (plus | minus | times | divided by | over) <atom>
              ;
 
 <atom> = <number> | <id> | <callExprFrags> | <arrayRef> | <string> ; 
