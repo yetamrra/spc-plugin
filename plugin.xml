@@ -26,6 +26,11 @@
    			name="Stop Dictation"
    			description="Stop Dictating and turn off the microphone"
    			id="com.example.helloworld.commands.stopDictation" />
+   		<command
+   			categoryId="com.example.helloworld.commands.category"
+   			name="Restart Dictation"
+   			description="Clear the buffer and restart the microphone"
+   			id="com.example.helloworld.commands.restartDictation" />
    </extension>
    <extension point="org.eclipse.ui.menus">
    		<menuContribution locationURI="menu:org.eclipse.ui.main.menu?after=additions">
@@ -38,6 +43,10 @@
    					commandId="com.example.helloworld.commands.stopDictation"
    					id="com.example.helloworld.menus.stopDictationMenu"
    					icon="icons/microphone-off.png" />
+   				<command 
+   					commandId="com.example.helloworld.commands.restartDictation"
+   					id="com.example.helloworld.menus.restartDictationMenu"
+   					icon="icons/restart.png" />
    				<command
              commandId="com.example.helloworld.commands.processAudioFile"
              icon="icons/audio.png"
@@ -56,10 +65,14 @@
    					id="com.example.helloworld.toolbars.startDictation"
    					icon="icons/microphone.png" />
    				<command
-             commandId="com.example.helloworld.commands.stopDictation"
-             icon="icons/microphone-off.png"
-             id="com.example.helloworld.toolbars.stopDictation">
-       </command>
+          		   	commandId="com.example.helloworld.commands.stopDictation"
+             		icon="icons/microphone-off.png"
+             		id="com.example.helloworld.toolbars.stopDictation">
+	       		</command>
+   				<command
+             		commandId="com.example.helloworld.commands.restartDictation"
+             		icon="icons/restart.png"
+             		id="com.example.helloworld.toolbars.restartDictation" />
    			</toolbar>
    		</menuContribution>
    </extension>
@@ -81,6 +94,10 @@
                     property="com.example.helloworld.isListening">
               </test>
         </enabledWhen>
+     </handler>
+   		<handler
+           class="com.example.helloworld.handlers.RestartDictation"
+           commandId="com.example.helloworld.commands.restartDictation">
      </handler>
    		<handler
            class="com.example.helloworld.handlers.ProcessAudioFile"
