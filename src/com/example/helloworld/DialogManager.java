@@ -206,7 +206,7 @@ public class DialogManager implements Configurable {
 						// Clear our state and start over
 						savedStates.clear();
 						curNode = initialNode;
-						//savedStates.push( curNode );
+						savedStates.push( curNode );
 						SpeechManager.getManager().setContext( curNode.getName() );
 					} else {
 						DialogNode node = nodeMap.get(nextStateName);
