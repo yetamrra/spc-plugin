@@ -105,9 +105,9 @@ public class SpeechListener implements Runnable, SLResultListener {
 		tmp = tmp.replaceAll( "\\bnine\\b", "9" );
 		tmp = tmp.replaceAll( "\\bten\\b", "10" );
 		tmp = tmp.replaceAll( "\\b(is )?less than or equal to\\b", "<=" );
-		tmp = tmp.replaceAll( "\\bless than\\b", "<" );
+		tmp = tmp.replaceAll( "\\b(is )?less than\\b", "<" );
 		tmp = tmp.replaceAll( "\\b(is )?greater than or equal to\\b", ">=" );
-		tmp = tmp.replaceAll( "\\bgreater than\\b", ">" );
+		tmp = tmp.replaceAll( "\\b(is )?greater than\\b", ">" );
 		tmp = tmp.replaceAll( "\\bnot equals\\b", "!=" );
 		tmp = tmp.replaceAll( "\\bequals\\b", "=" );
 		tmp = tmp.replaceAll( "\\bplus\\b", "+" );
