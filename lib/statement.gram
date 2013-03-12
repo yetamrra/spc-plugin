@@ -16,7 +16,6 @@ public <standard_statements> = <statement>;
 			| <inputFrags>
 			| nothing
 			| call <id> [ <withFrags> ]
-			| nothing
 			;
 	
 <assignment> = Set <id> to <expression>
