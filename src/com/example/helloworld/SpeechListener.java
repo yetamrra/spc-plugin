@@ -121,7 +121,7 @@ public class SpeechListener implements Runnable, SLResultListener {
         //IWorkbench wb = PlatformUI.getWorkbench();
         //IWorkbenchWindow win = wb.getActiveWorkbenchWindow();
 		int depth = DialogManager.getSavedStates().size() - 1;
-		if ( tag != null && tag.equals("out") ) {
+		if ( tag != null && (tag.equals("out") || tag.equals("else_block")) ) {
 			depth--;
 		}
 		TextInsertOp op = new TextInsertOp( window, insertText, previousInserts, context, depth );
