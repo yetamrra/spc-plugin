@@ -55,7 +55,7 @@ public <standard_statements> = <statement>;
 <withFrags> = with <expression> (and <expression>)*
             ;
 
-<number> = zero | one | two | three | four | five | six | seven | eight | nine | ten;
+<number> = zero | one | two | three | four | five | six | seven | eight | nine | ten | eleven | twenty;
 
 <id> = X | Y | Z | A | B | C | D | F | G | I | J | K | L | M | N | P | Q | main | sort | min | max | average | fact | short;
 
