@@ -9,6 +9,7 @@ grammar program;
 public <program> = <program.function> {goto_function}
 				 | stop listening {exit}
 				 | start over {reset}
+				 | (fix that | no) {correction}
 				 ;
 
 <function> = define function <id> taking no arguments as 

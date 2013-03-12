@@ -182,6 +182,7 @@ public class SpeechListener implements Runnable, SLResultListener {
 		        } else {
 		        	newTag = "out";
 		        }
+		        newTag = "correction";
 			} else {
 				newTag = "";
 			}
@@ -195,8 +196,14 @@ public class SpeechListener implements Runnable, SLResultListener {
 		} else {
 			if ( text.length() > 0 ) {
 				insertText( text, context, tag );
+				if ( nnTag.length() > 0 ) {
+					newTag = nnTag;
+				} else {
+					newTag = "inserted";
+				}
+			} else {
+				newTag = null;
 			}
-			newTag = tag;
 		}
 		
 		return newTag;

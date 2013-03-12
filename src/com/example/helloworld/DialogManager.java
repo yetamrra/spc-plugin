@@ -83,6 +83,7 @@ public class DialogManager implements Configurable {
 	private List<ResultListener> resultListeners = new ArrayList<ResultListener>();
 
 	public static Stack<DialogNode> savedStates = new Stack<DialogNode>();
+	public static Stack<LineAction> lineActions = new Stack<LineAction>();
 	
 	/*
 	 * (non-Javadoc)
@@ -163,6 +164,8 @@ public class DialogManager implements Configurable {
 		DialogNode lastNode = null;
 		DialogNode curNode = initialNode;
 		savedStates.push( curNode );
+		lineActions.clear();
+		lineActions.push( new LineAction(LineAction.ActionType.UNCHANGED,null) );
 
 		try {
 			if (microphone == null || microphone.startRecording()) {
@@ -189,24 +192,53 @@ public class DialogManager implements Configurable {
 					}
 					if (nextStateName == null || nextStateName.isEmpty()) {
 						continue;
+					} else if ( nextStateName.equals("inserted") ) {
+						lineActions.push( new LineAction(LineAction.ActionType.UNCHANGED,null) );
+						continue;
 					} else if ( nextStateName.equals("exit") ) {
 						break;
 					} else if ( nextStateName.equals("out") ) {
-						savedStates.pop();
+						DialogNode n = savedStates.pop();
 						curNode = savedStates.peek();
+						lineActions.push( new LineAction(LineAction.ActionType.ADD,n) );
 						System.out.println( "Context out: " + savedStates );
 					} else if ( nextStateName.equals("correction") ) {
 						// The result listener has already made the correction, but
-						// we might have to pop out from a block if the correction
-						// was the start of a block.  Therefore this is either the
-						// same as "out" or the same as ""
-						// FIXME: Do we need to do anything after all?
-						assert ( false );
+						// we might have to adjust the context if the line had triggered
+						// the addition or removal of a saved state.
+						if ( lineActions.size() > 0 ) {
+							LineAction action = lineActions.pop();
+							switch ( action.actionType ) {
+								case UNCHANGED:
+									System.out.println( "Correction made.  No context change." );
+									break;
+								
+								case ADD:
+									savedStates.push( action.node );
+									System.out.println( "Correction made.  Added " + action.node.getName() );
+									break;
+									
+								case REMOVE:
+									DialogNode n = savedStates.pop();
+									if ( action.node != null ) {
+										savedStates.push( action.node );
+										System.out.println( "Correction made.  Removed " + n.getName() + " and added " + action.node.getName() );
+									} else {
+										System.out.println( "Correction made.  Removed " + n.getName() );
+									}
+									break;
+							}
+							curNode = savedStates.peek();
+							System.out.println( "Context after correction: " + savedStates );
+						}
+						continue;
 					} else if ( nextStateName.equals("reset") ) {
 						// Clear our state and start over
 						savedStates.clear();
+						lineActions.clear();
 						curNode = initialNode;
 						savedStates.push( curNode );
+						lineActions.push( new LineAction(LineAction.ActionType.UNCHANGED,null) );
 						SpeechManager.getManager().setContext( curNode.getName() );
 					} else {
 						DialogNode node = nodeMap.get(nextStateName);
@@ -215,8 +247,12 @@ public class DialogManager implements Configurable {
 									+ nextStateName);
 						} else {
 							if ( nextStateName.equals("else_block") ) {
-								savedStates.pop();
 								// else block replaces the if, not nests.
+								DialogNode n = savedStates.peek();
+								lineActions.push( new LineAction(LineAction.ActionType.REMOVE,n) );
+								savedStates.pop();
+							} else {
+								lineActions.push( new LineAction(LineAction.ActionType.REMOVE,null) );
 							}
 							savedStates.push( node );
 							curNode = node;
