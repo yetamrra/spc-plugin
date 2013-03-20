@@ -204,7 +204,8 @@ public class SpeechListener implements Runnable, SLResultListener {
 					newTag = "inserted";
 				}
 			} else {
-				newTag = null;
+				insertText( "*missed utterance*", context, null );
+				newTag = "inserted";
 			}
 		}
 		
