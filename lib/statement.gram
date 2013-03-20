@@ -20,6 +20,8 @@ public <standard_statements> = <statement>;
 	
 <assignment> = Set <id> to <expression>
 			 | Set <arrayRef> to <expression>
+			 | Set <id> to <callExprFrags>
+			 | Set <arrayRef> to <callExprFrags>
 			 ;
 
 <printFrags> = print <expression>
@@ -45,7 +47,7 @@ public <standard_statements> = <statement>;
 			 | <atom> (plus | minus | times | divided by | over) <atom>
              ;
 
-<atom> = <number> | <id> | <callExprFrags> | <arrayRef> | <string> ; 
+<atom> = <number> | <id> | <arrayRef> | <string> ; 
 
 <callExprFrags> = the result of calling <id> [ <withFrags> ]
                 ;
