@@ -3,6 +3,8 @@ package com.example.helloworld;
 import java.io.IOException;
 import java.net.URL;
 import java.util.Stack;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.Platform;
@@ -73,6 +75,7 @@ public class SpeechListener implements Runnable, SLResultListener {
 	        }
 
             System.out.println("Running  ...");
+            Scope.reset();
     		this.previousInserts = new Stack<TextInsertion>();	// new one every time even though it's static
             DialogManager.clearSavedStates();
             dialogManager.go();
@@ -120,6 +123,8 @@ public class SpeechListener implements Runnable, SLResultListener {
 		
 		String insertText = tmp + " \n";
 		
+		processTextAction( tmp );
+		
         //IWorkbench wb = PlatformUI.getWorkbench();
         //IWorkbenchWindow win = wb.getActiveWorkbenchWindow();
 		int depth = DialogManager.getSavedStates().size() - 1;
@@ -130,6 +135,108 @@ public class SpeechListener implements Runnable, SLResultListener {
         Display.getDefault().asyncExec( op );
 	}
 
+	void processTextAction( String text )
+	{
+		// Function definitions create the function in the current
+		// scope and then their arguments in a new scope.
+		Pattern p = Pattern.compile( "^define function (\\w+)" );
+		Matcher m = p.matcher(text);
+		if ( m.find() ) {
+			String id = m.group(1);
+			Scope.getCurrentScope().define( id );
+			Scope s = Scope.newScope();
+			p = Pattern.compile( " taking arguments (\\w+)(?: and (\\w+))*" );
+			m = p.matcher( text.substring(m.end(1)) );
+			if ( m.find() ) {
+				for ( int i=1; i<m.groupCount(); i++ ) {
+					s.define( m.group(i) );
+				}
+			}
+			return;
+		}
+		
+		// The end of a block ends the current scope
+		p = Pattern.compile( "^end (function|while|if)" );
+		m = p.matcher( text );
+		if ( m.find() ) {
+			Scope.popScope();
+			return;
+		}
+		
+		// An else ends the current scope and starts a new one
+		p = Pattern.compile( "^else" );
+		m = p.matcher( text );
+		if ( m.find() ) {
+			Scope.popScope();
+			Scope.newScope();
+			return;
+		}
+		
+		// A scalar assignment creates a new variable in the current scope
+		// if it doesn't already exist
+		p = Pattern.compile( "^set (\\w+) to" );
+		m = p.matcher( text );
+		if ( m.find() ) {
+			String id = m.group(1);
+			Scope s = Scope.getCurrentScope();
+			if ( !s.isDefined(id,true) ) {
+				s.define(id);
+			}
+			return;
+		}
+		
+		// An array assignment creates a new variable in the current scope
+		// if it doesn't already exist
+		p = Pattern.compile( "^set element \\w+ of (\\w+) to" );
+		m = p.matcher( text );
+		if ( m.find() ) {
+			String id = m.group(1);
+			Scope s = Scope.getCurrentScope();
+			if ( !s.isDefined(id,true) ) {
+				s.define(id);
+			}
+			return;
+		}
+		
+		// Reading a scalar variable creates it if it doesn't exist
+		p = Pattern.compile( "^read (\\w+)" );
+		m = p.matcher( text );
+		if ( m.find() ) {
+			String id = m.group(1);
+			Scope s = Scope.getCurrentScope();
+			if ( !s.isDefined(id,true) ) {
+				s.define(id);
+			}
+			return;
+		}
+
+		// Reading an array variable creates it if it doesn't exist
+		p = Pattern.compile( "^read element \\w+ of (\\w+)" );
+		m = p.matcher( text );
+		if ( m.find() ) {
+			String id = m.group(1);
+			Scope s = Scope.getCurrentScope();
+			if ( !s.isDefined(id,true) ) {
+				s.define(id);
+			}
+			return;
+		}
+
+		// Hitting an if-then or a while-do creates a new scope
+		p = Pattern.compile( "^if .* then" );
+		m = p.matcher( text );
+		if ( m.find() ) {
+			Scope.newScope();
+			return;
+		}
+		p = Pattern.compile( "^while .* do" );
+		m = p.matcher( text );
+		if ( m.find() ) {
+			Scope.newScope();
+			return;
+		}
+	}
+	
 	@Override
 	public void newProperties(PropertySheet ps) throws PropertyException {
 		// TODO Auto-generated method stub
