@@ -6,15 +6,17 @@
 
 grammar program;
 
-public <program> = <program.function> {goto_function}
+public <program> = <function> {goto_function}
 				 ;
 
-<function> = define function <id> taking no arguments as 
-		   | define function <id> taking arguments <id> (and <id>)* as
+<function> = define function <unusedFunction> taking no arguments as 
+		   | define function <unusedFunction> taking arguments <id> (and <id>)* as
 		   ;
 	
 <number> = zero | one | two | three | four | five | six | seven | eight | nine | ten;
 
 <id> = X | Y | Z | A | B | C | D | F | G | I | J | K | L | M | N | P | Q | main | sort | fact | factor;
+
+<unusedFunction> = <id> ;
 
 	

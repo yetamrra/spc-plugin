@@ -9,7 +9,16 @@ import java.util.List;
 import java.util.Set;
 
 import javax.speech.recognition.GrammarException;
+import javax.speech.recognition.Rule;
+import javax.speech.recognition.RuleGrammar;
 
+import com.sun.speech.engine.recognition.BaseRecognizer;
+import com.sun.speech.engine.recognition.BaseRuleGrammar;
+
+import edu.cmu.sphinx.jsgf.JSGFGrammarException;
+import edu.cmu.sphinx.jsgf.JSGFGrammarParseException;
+import edu.cmu.sphinx.jsgf.JSGFRuleGrammar;
+import edu.cmu.sphinx.jsgf.rule.JSGFRuleName;
 import edu.cmu.sphinx.result.Result;
 import edu.cmu.sphinx.util.TimerPool;
 
@@ -29,7 +38,64 @@ class SLBehavior extends NewGrammarDialogNodeBehavior {
         help();
     }
 
-
+    public void updateSymbols() throws JSGFGrammarException, IOException, JSGFGrammarParseException
+    {
+        BaseRecognizer recognizer = new BaseRecognizer(getGrammar().getGrammarManager());
+        try {
+            recognizer.allocate();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        
+        List<JSGFRuleName> imports = getGrammar().getRuleGrammar().getImports();
+        boolean doImports = false;
+        for ( JSGFRuleName name: imports ) {
+        	if ( name.getRuleName().equals("statement.standard_statements") ) {
+        		doImports = true;
+        		break;
+        	}
+        }
+        JSGFRuleGrammar jGram;
+        if ( doImports ) {
+        	jGram = getGrammar().getGrammarManager().retrieveGrammar( "statement" );
+        } else {
+        	jGram = getGrammar().getRuleGrammar();
+        }
+        RuleGrammar ruleGrammar = new BaseRuleGrammar(recognizer, jGram);
+        
+        // Replace the definedSymbols rule with a list of our defined symbols
+        String symbols;
+        if ( System.getProperty("org.bxg.spokencompiler.UseScoping") != null ) {
+	        symbols = StringUtils.join( Scope.getCurrentScope().getSymbols(true), " | " );
+        } else {
+        	symbols = "<id>";
+        }
+        
+        Rule newRule;
+		try {
+	        if ( symbols.length() > 0 ) {
+				newRule = ruleGrammar.ruleForJSGF( symbols );
+	        } else {
+	        	newRule = ruleGrammar.ruleForJSGF( "<VOID>" );
+	        } 
+		} catch (GrammarException e) {
+			throw new JSGFGrammarException( e.toString() );
+		}
+        ruleGrammar.setRule( "definedSymbols", newRule, false );
+        ruleGrammar.setEnabled( "definedSymbols", true );
+        getGrammar().commitChanges();
+        grammarChanged();
+        System.out.println( ruleGrammar );    	
+    }
+    
+    @Override
+    public void onEntry() throws IOException, JSGFGrammarParseException, JSGFGrammarException
+    {
+    	super.onEntry();
+    	
+    	updateSymbols();
+    }
+    
     /**
      * Displays the help message for this node. Currently we display the name of the node and the list of sentences that
      * can be spoken.

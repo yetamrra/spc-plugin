@@ -7,5 +7,5 @@ import edu.cmu.sphinx.result.Result;
 
 public interface SLResultListener extends ResultListener
 {
-	String newResult( Result result, DialogNode context, String tag );
+	String newResult( Result result, DialogNode context, String tag, SLBehavior behavior );
 }

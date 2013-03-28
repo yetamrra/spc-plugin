@@ -15,13 +15,13 @@ public <standard_statements> = <statement>;
 			| <ifFrags>
 			| <inputFrags>
 			| nothing
-			| call <id> [ <withFrags> ]
+			| call <definedSymbols> [ <withFrags> ]
 			;
 	
 <assignment> = Set <id> to <expression>
-			 | Set <arrayRef> to <expression>
+			 | Set element (<number> | <id>) of <id> to <expression>
 			 | Set <id> to <callExprFrags>
-			 | Set <arrayRef> to <callExprFrags>
+			 | Set element (<number> | <id>) of <id> to <callExprFrags>
 			 ;
 
 <printFrags> = print <expression>
@@ -47,12 +47,12 @@ public <standard_statements> = <statement>;
 			 | <atom> (plus | minus | times | divided by | over) <atom>
              ;
 
-<atom> = <number> | <id> | <arrayRef> | <string> ; 
+<atom> = <number> | <definedSymbols> | <arrayRef> | <string> ; 
 
-<callExprFrags> = the result of calling <id> [ <withFrags> ]
+<callExprFrags> = the result of calling <definedSymbols> [ <withFrags> ]
                 ;
 
-<arrayRef> = element (<number> | <id>) of <id> ;
+<arrayRef> = element (<number> | <id>) of <definedSymbols> ;
 
 <withFrags> = with <expression> (and <expression>)*
             ;
@@ -60,5 +60,7 @@ public <standard_statements> = <statement>;
 <number> = zero | one | two | three | four | five | six | seven | eight | nine | ten | eleven | twenty;
 
 <id> = X | Y | Z | A | B | C | D | F | G | I | J | K | L | M | N | P | Q | R | main | sort | min | max | average | fact | short;
+
+<definedSymbols> = <VOID> ;
 
 <string> = the string {goto_string} ;

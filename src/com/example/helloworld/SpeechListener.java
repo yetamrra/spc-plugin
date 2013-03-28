@@ -89,7 +89,7 @@ public class SpeechListener implements Runnable, SLResultListener {
 		return;
 	}
 
-	private void insertText( String resultText, DialogNode context, String tag )
+	private void insertText( String resultText, DialogNode context, String tag, SLBehavior behavior )
 	{
 		if ( resultText.length() == 0 ) {
 			return;
@@ -123,7 +123,7 @@ public class SpeechListener implements Runnable, SLResultListener {
 		
 		String insertText = tmp + " \n";
 		
-		processTextAction( tmp );
+		processTextAction( tmp, behavior );
 		
         //IWorkbench wb = PlatformUI.getWorkbench();
         //IWorkbenchWindow win = wb.getActiveWorkbenchWindow();
@@ -135,7 +135,23 @@ public class SpeechListener implements Runnable, SLResultListener {
         Display.getDefault().asyncExec( op );
 	}
 
-	void processTextAction( String text )
+	void updateBehavior( SLBehavior behavior )
+	{
+		try {
+			behavior.updateSymbols();
+		} catch (JSGFGrammarException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (JSGFGrammarParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
+	void processTextAction( String text, SLBehavior behavior )
 	{
 		// Function definitions create the function in the current
 		// scope and then their arguments in a new scope.
@@ -152,6 +168,7 @@ public class SpeechListener implements Runnable, SLResultListener {
 					s.define( m.group(i) );
 				}
 			}
+			updateBehavior( behavior );
 			return;
 		}
 		
@@ -160,6 +177,7 @@ public class SpeechListener implements Runnable, SLResultListener {
 		m = p.matcher( text );
 		if ( m.find() ) {
 			Scope.popScope();
+			updateBehavior( behavior );
 			return;
 		}
 		
@@ -169,6 +187,7 @@ public class SpeechListener implements Runnable, SLResultListener {
 		if ( m.find() ) {
 			Scope.popScope();
 			Scope.newScope();
+			updateBehavior( behavior );
 			return;
 		}
 		
@@ -182,6 +201,7 @@ public class SpeechListener implements Runnable, SLResultListener {
 			if ( !s.isDefined(id,true) ) {
 				s.define(id);
 			}
+			updateBehavior( behavior );
 			return;
 		}
 		
@@ -195,6 +215,7 @@ public class SpeechListener implements Runnable, SLResultListener {
 			if ( !s.isDefined(id,true) ) {
 				s.define(id);
 			}
+			updateBehavior( behavior );
 			return;
 		}
 		
@@ -207,6 +228,7 @@ public class SpeechListener implements Runnable, SLResultListener {
 			if ( !s.isDefined(id,true) ) {
 				s.define(id);
 			}
+			updateBehavior( behavior );
 			return;
 		}
 
@@ -219,6 +241,7 @@ public class SpeechListener implements Runnable, SLResultListener {
 			if ( !s.isDefined(id,true) ) {
 				s.define(id);
 			}
+			updateBehavior( behavior );
 			return;
 		}
 
@@ -227,12 +250,14 @@ public class SpeechListener implements Runnable, SLResultListener {
 		m = p.matcher( text );
 		if ( m.find() ) {
 			Scope.newScope();
+			updateBehavior( behavior );
 			return;
 		}
 		p = Pattern.compile( "^while .* do" );
 		m = p.matcher( text );
 		if ( m.find() ) {
 			Scope.newScope();
+			updateBehavior( behavior );
 			return;
 		}
 	}
@@ -258,7 +283,7 @@ public class SpeechListener implements Runnable, SLResultListener {
 	}
 
 	@Override
-	public String newResult(Result result, DialogNode context, String tag) {
+	public String newResult(Result result, DialogNode context, String tag, SLBehavior behavior) {
 		// FIXME: handle null better
 		if ( result == null ) {
 			return "exit";
@@ -304,14 +329,14 @@ public class SpeechListener implements Runnable, SLResultListener {
 			
 		} else {
 			if ( text.length() > 0 ) {
-				insertText( text, context, tag );
+				insertText( text, context, tag, behavior );
 				if ( nnTag.length() > 0 ) {
 					newTag = nnTag;
 				} else {
 					newTag = "inserted";
 				}
 			} else {
-				insertText( "*missed utterance*", context, null );
+				insertText( "*missed utterance*", context, null, behavior );
 				newTag = "inserted";
 			}
 		}

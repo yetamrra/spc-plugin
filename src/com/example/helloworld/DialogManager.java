@@ -420,7 +420,7 @@ public class DialogManager implements Configurable {
 			String tag = behavior.onRecognize(result);
 			for (ResultListener l : resultListeners) {
 				if ( l instanceof SLResultListener ) {
-					tag = ((SLResultListener)l).newResult( result, savedStates.peek(), tag );
+					tag = ((SLResultListener)l).newResult( result, savedStates.peek(), tag, (SLBehavior)behavior );
 				} else {
 					l.newResult(result);
 				}

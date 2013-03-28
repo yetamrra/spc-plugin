@@ -1,6 +1,8 @@
 package com.example.helloworld;
 
 import java.util.LinkedHashSet;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Set;
 
 public class Scope
@@ -74,5 +76,16 @@ public class Scope
 	public Scope getParent()
 	{
 		return parentScope;
+	}
+	
+	public List<String> getSymbols( boolean recurse )
+	{
+		List<String> retVal = new LinkedList<String>();
+		retVal.addAll( symbols );
+		if ( recurse && parentScope != null ) {
+			retVal.addAll( parentScope.getSymbols(recurse) );
+		}
+		
+		return retVal;
 	}
 }
