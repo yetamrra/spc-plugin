@@ -19,9 +19,9 @@ public <standard_statements> = <statement>;
 			;
 	
 <assignment> = Set <id> to <expression>
-			 | Set element (<number> | <id>) of <id> to <expression>
+			 | Set element (<number> | <definedSymbols>) of <id> to <expression>
 			 | Set <id> to <callExprFrags>
-			 | Set element (<number> | <id>) of <id> to <callExprFrags>
+			 | Set element (<number> | <definedSymbols>) of <id> to <callExprFrags>
 			 ;
 
 <printFrags> = print <expression>
@@ -52,7 +52,7 @@ public <standard_statements> = <statement>;
 <callExprFrags> = the result of calling <definedSymbols> [ <withFrags> ]
                 ;
 
-<arrayRef> = element (<number> | <id>) of <definedSymbols> ;
+<arrayRef> = element (<number> | <definedSymbols>) of <definedSymbols> ;
 
 <withFrags> = with <expression> (and <expression>)*
             ;
