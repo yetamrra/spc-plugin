@@ -161,11 +161,14 @@ public class SpeechListener implements Runnable, SLResultListener {
 			String id = m.group(1);
 			Scope.getCurrentScope().define( id );
 			Scope s = Scope.newScope();
-			p = Pattern.compile( " taking arguments (\\w+)(?: and (\\w+))*" );
+			p = Pattern.compile( " taking arguments (\\w+)" ); //( and (\\w+))* as" );
 			m = p.matcher( text.substring(m.end(1)) );
 			if ( m.find() ) {
-				for ( int i=1; i<m.groupCount(); i++ ) {
-					s.define( m.group(i) );
+				s.define( m.group(1) );
+				p = Pattern.compile( " and (\\w+)" );
+				m = p.matcher( text.substring(m.end(1)) );
+				while ( m.find() ) {
+					s.define( m.group(1) );
 				}
 			}
 			updateBehavior( behavior );
