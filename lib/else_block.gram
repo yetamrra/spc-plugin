@@ -11,4 +11,5 @@ import <editing_commands.editing_commands>;
 
 public <else_block> 	= end if {out}
 						| <standard_statements>
+						| <editing_commands>
 						;

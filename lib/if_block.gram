@@ -11,4 +11,5 @@ import <editing_commands.editing_commands>;
 
 public <if_block> 	= else {goto_else_block}
 					| <standard_statements>
+					| <editing_commands>
 					;

@@ -11,4 +11,5 @@ import <editing_commands.editing_commands>;
 
 public <while_block> 	= end while {out}
 						| <standard_statements>
+						| <editing_commands>
 						;

@@ -6,7 +6,10 @@
 
 grammar program;
 
-public <program> = <function> {goto_function}
+public <program> = <program.function> {goto_function}
+				 | stop listening {exit}
+				 | start over {reset}
+				 | (fix that | no) {correction}
 				 ;
 
 <function> = define function <unusedFunction> taking no arguments as 
@@ -15,8 +18,6 @@ public <program> = <function> {goto_function}
 	
 <number> = zero | one | two | three | four | five | six | seven | eight | nine | ten;
 
-<id> = X | Y | Z | A | B | C | D | F | G | I | J | K | L | M | N | P | Q | main | sort | fact | factor;
+<id> = X | Y | Z | A | B | C | D | F | G | I | J | K | L | M | N | P | Q | main | sort | fact;
 
 <unusedFunction> = <id> ;
-
-	
