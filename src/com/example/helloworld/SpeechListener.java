@@ -159,18 +159,52 @@ public class SpeechListener implements Runnable, SLResultListener {
 		Matcher m = p.matcher(text);
 		if ( m.find() ) {
 			String id = m.group(1);
-			Scope.getCurrentScope().define( id );
+			Scope par = Scope.getCurrentScope();
 			Scope s = Scope.newScope();
-			p = Pattern.compile( " taking arguments (\\w+)" ); //( and (\\w+))* as" );
+			int args = 0;
+			p = Pattern.compile( " taking arguments (\\w+)" );
 			m = p.matcher( text.substring(m.end(1)) );
 			if ( m.find() ) {
-				s.define( m.group(1) );
+				args += 1;
+				s.define( m.group(1), SymType.UNKNOWN );
 				p = Pattern.compile( " and (\\w+)" );
 				m = p.matcher( text.substring(m.end(1)) );
 				while ( m.find() ) {
-					s.define( m.group(1) );
+					s.define( m.group(1), SymType.UNKNOWN );
+					args += 1;
 				}
 			}
+			SymType funcType;
+			switch ( args ) {
+				case 0:
+					funcType = SymType.FUNCTION0;
+					break;
+					
+				case 1:
+					funcType = SymType.FUNCTION1;
+					break;
+					
+				case 2:
+					funcType = SymType.FUNCTION2;
+					break;
+					
+				case 3:
+					funcType = SymType.FUNCTION3;
+					break;
+					
+				case 4:
+					funcType = SymType.FUNCTION4;
+					break;
+					
+				case 5:
+					funcType = SymType.FUNCTION5;
+					break;
+					
+				default:
+					funcType = SymType.FUNCTION;
+					break;
+			}
+			par.define( id, funcType );
 			updateBehavior( behavior );
 			return;
 		}
@@ -202,7 +236,8 @@ public class SpeechListener implements Runnable, SLResultListener {
 			String id = m.group(1);
 			Scope s = Scope.getCurrentScope();
 			if ( !s.isDefined(id,true) ) {
-				s.define(id);
+				// FIXME: Try to type this
+				s.define(id, SymType.UNKNOWN);
 			}
 			updateBehavior( behavior );
 			return;
@@ -216,7 +251,8 @@ public class SpeechListener implements Runnable, SLResultListener {
 			String id = m.group(1);
 			Scope s = Scope.getCurrentScope();
 			if ( !s.isDefined(id,true) ) {
-				s.define(id);
+				// FIXME: Try to type the array
+				s.define(id, SymType.ARRAY);
 			}
 			updateBehavior( behavior );
 			return;
@@ -229,7 +265,7 @@ public class SpeechListener implements Runnable, SLResultListener {
 			String id = m.group(1);
 			Scope s = Scope.getCurrentScope();
 			if ( !s.isDefined(id,true) ) {
-				s.define(id);
+				s.define(id, SymType.UNKNOWN);
 			}
 			updateBehavior( behavior );
 			return;
@@ -242,7 +278,7 @@ public class SpeechListener implements Runnable, SLResultListener {
 			String id = m.group(1);
 			Scope s = Scope.getCurrentScope();
 			if ( !s.isDefined(id,true) ) {
-				s.define(id);
+				s.define(id, SymType.ARRAY);
 			}
 			updateBehavior( behavior );
 			return;

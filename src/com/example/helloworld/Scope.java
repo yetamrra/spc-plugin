@@ -1,16 +1,20 @@
 package com.example.helloworld;
 
 import java.util.LinkedHashSet;
-import java.util.LinkedList;
-import java.util.List;
 import java.util.Set;
 
 public class Scope
 {
 	static Scope currentScope = new Scope( null );
+	static Set<String> allSyms;
 	
-	private Scope parentScope;
-	private Set<String> symbols;
+	static {
+		allSyms = new LinkedHashSet<String>();
+		allSyms.add( "a" );
+		allSyms.add( "b" );
+		allSyms.add( "c" );
+		allSyms.add( "main" );
+	}
 	
 	public static Scope getCurrentScope() { return currentScope; }
 	public static void reset() { currentScope = new Scope( null ); }
@@ -30,9 +34,12 @@ public class Scope
 		return currentScope;
 	}
 	
+	private Scope parentScope;
+	private Set<ProgSym> symbols;
+	
 	public Scope( Scope parent )
 	{
-		symbols = new LinkedHashSet<String>();
+		symbols = new LinkedHashSet<ProgSym>();
 		parentScope = parent;
 	}
 	
@@ -43,7 +50,7 @@ public class Scope
 			depth = parentScope.toSymbolTree();
 		}
 		
-		for ( String s: symbols ) {
+		for ( ProgSym s: symbols ) {
 			for ( int i=0; i<=depth; i++ ) {
 			    System.out.print( "  " );
 			}
@@ -53,9 +60,9 @@ public class Scope
 		return depth + 1;
 	}
 	
-	public void define( String name )
+	public void define( String name, SymType type )
 	{
-		symbols.add( name );
+		symbols.add( new ProgSym(name,type) );
 		System.out.println( "Defined symbol " + name );
 	}
 	
@@ -78,14 +85,40 @@ public class Scope
 		return parentScope;
 	}
 	
-	public List<String> getSymbols( boolean recurse )
+	public Set<ProgSym> getSymbols( boolean recurse )
 	{
-		List<String> retVal = new LinkedList<String>();
+		Set<ProgSym> retVal = new LinkedHashSet<ProgSym>();
 		retVal.addAll( symbols );
 		if ( recurse && parentScope != null ) {
 			retVal.addAll( parentScope.getSymbols(recurse) );
 		}
 		
+		return retVal;
+	}
+	
+	public Set<ProgSym> getSymType( SymType type )
+	{
+		Set<ProgSym> symbols = getSymbols( true );
+		Set<ProgSym> retVal = new LinkedHashSet<ProgSym>();
+		for ( ProgSym s: symbols ) {
+			if ( s.type == type ) {
+				retVal.add( s );
+			}
+		}
+		return retVal;
+	}
+	
+	public Set<ProgSym> getFunctions( int argLimit )
+	{
+		// Functions are only defined at the top level,
+		// and nothing else is, so we'll cheat by
+		// just returning the top-level symbols
+		Scope scope = this;
+		while ( scope.parentScope != null ) {
+			scope = scope.parentScope;
+		}
+		Set<ProgSym> retVal = new LinkedHashSet<ProgSym>();
+		retVal.addAll( scope.symbols );
 		return retVal;
 	}
 }

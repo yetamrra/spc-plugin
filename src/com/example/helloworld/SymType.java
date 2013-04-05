@@ -1,0 +1,18 @@
+package com.example.helloworld;
+
+public enum SymType
+{
+	UNKNOWN,
+	INT,
+	STRING,
+	ARRAY,
+	INTARRAY,
+	STRINGARRAY,
+	FUNCTION0,
+	FUNCTION1,
+	FUNCTION2,
+	FUNCTION3,
+	FUNCTION4,
+	FUNCTION5,
+	FUNCTION,
+}

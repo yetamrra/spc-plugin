@@ -15,7 +15,10 @@ public <standard_statements> = <statement>;
 			| <ifFrags>
 			| <inputFrags>
 			| nothing
-			| call <definedSymbols> [ <withFrags> ]
+			| call <function0args>
+			| call <function1args> with <expression>
+			| call <function2args> with <expression> and <expression>
+			| call <function3args> with <expression> and <expression> and <expression>
 			;
 	
 <assignment> = Set <id> to <expression>
@@ -60,6 +63,14 @@ public <standard_statements> = <statement>;
 <number> = zero | one | two | three | four | five | six | seven | eight | nine | ten | eleven | twenty;
 
 <id> = X | Y | Z | A | B | C | D | F | G | I | J | K | L | M | N | P | Q | R | main | sort | min | max | average | fact | short;
+
+<function0args> = <VOID> ;
+
+<function1args> = <VOID> ;
+
+<function2args> = <VOID> ;
+
+<function3args> = <VOID> ;
 
 <definedSymbols> = <VOID> ;
 

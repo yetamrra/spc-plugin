@@ -70,22 +70,48 @@ class SLBehavior extends NewGrammarDialogNodeBehavior {
         } else {
         	symbols = "<id>";
         }
+
+        String function0args;
+        String function1args;
+        String function2args;
+        String function3args;
+        if ( System.getProperty("org.bxg.spokencompiler.UseTyping") != null ) {
+        	function0args = StringUtils.join( Scope.getCurrentScope().getSymType(SymType.FUNCTION0), " | " );
+        	function1args = StringUtils.join( Scope.getCurrentScope().getSymType(SymType.FUNCTION1), " | " );
+        	function2args = StringUtils.join( Scope.getCurrentScope().getSymType(SymType.FUNCTION2), " | " );
+        	function3args = StringUtils.join( Scope.getCurrentScope().getSymType(SymType.FUNCTION3), " | " );
+        } else {
+        	function0args = symbols;
+        	function1args = symbols;
+        	function2args = symbols;
+        	function3args = symbols;
+        }
         
+        makeRule( ruleGrammar, "definedSymbols", symbols );
+        makeRule( ruleGrammar, "function0args", function0args );
+        makeRule( ruleGrammar, "function1args", function1args );
+        makeRule( ruleGrammar, "function2args", function2args );
+        makeRule( ruleGrammar, "function3args", function3args );
+        
+        getGrammar().commitChanges();
+        grammarChanged();
+        System.out.println( ruleGrammar );    	
+    }
+    
+    void makeRule( RuleGrammar ruleGrammar, String ruleName, String ruleText ) throws JSGFGrammarException
+    {
         Rule newRule;
 		try {
-	        if ( symbols.length() > 0 ) {
-				newRule = ruleGrammar.ruleForJSGF( symbols );
+	        if ( ruleText.length() > 0 ) {
+				newRule = ruleGrammar.ruleForJSGF( ruleText );
 	        } else {
 	        	newRule = ruleGrammar.ruleForJSGF( "<VOID>" );
 	        } 
 		} catch (GrammarException e) {
 			throw new JSGFGrammarException( e.toString() );
 		}
-        ruleGrammar.setRule( "definedSymbols", newRule, false );
-        ruleGrammar.setEnabled( "definedSymbols", true );
-        getGrammar().commitChanges();
-        grammarChanged();
-        System.out.println( ruleGrammar );    	
+        ruleGrammar.setRule( ruleName, newRule, false );
+        ruleGrammar.setEnabled( ruleName, true );
     }
     
     @Override
