@@ -6,40 +6,40 @@ import java.util.Set;
 public class Scope
 {
 	static Scope currentScope = new Scope( null );
-	static Set<String> allSyms;
+	static Set<ProgSym> allSyms;
 	
 	static {
-		allSyms = new LinkedHashSet<String>();
-		allSyms.add( "a" );
-		allSyms.add( "b" );
-		allSyms.add( "c" );
-		allSyms.add( "d" );
-		allSyms.add( "e" );
-		allSyms.add( "f" );
-		allSyms.add( "g" );
-		allSyms.add( "i" );
-		allSyms.add( "j" );
-		allSyms.add( "k" );
-		allSyms.add( "l" );
-		allSyms.add( "m" );
-		allSyms.add( "n" );
-		allSyms.add( "p" );
-		allSyms.add( "q" );
-		allSyms.add( "r" );
-		allSyms.add( "x" );
-		allSyms.add( "y" );
-		allSyms.add( "z" );
-		allSyms.add( "sort" );
-		allSyms.add( "fact" );
-		allSyms.add( "factor" );
-		allSyms.add( "main" );
-		allSyms.add( "min" );
-		allSyms.add( "max" );
-		allSyms.add( "average" );
-		allSyms.add( "short" );
+		allSyms = new LinkedHashSet<ProgSym>();
+		allSyms.add( new ProgSym("a", SymType.UNKNOWN) );
+		allSyms.add( new ProgSym("b", SymType.UNKNOWN) );
+		allSyms.add( new ProgSym("c", SymType.UNKNOWN) );
+		allSyms.add( new ProgSym("d", SymType.UNKNOWN) );
+		allSyms.add( new ProgSym("e", SymType.UNKNOWN) );
+		allSyms.add( new ProgSym("f", SymType.UNKNOWN) );
+		allSyms.add( new ProgSym("g", SymType.UNKNOWN) );
+		allSyms.add( new ProgSym("i", SymType.UNKNOWN) );
+		allSyms.add( new ProgSym("j", SymType.UNKNOWN) );
+		allSyms.add( new ProgSym("k", SymType.UNKNOWN) );
+		allSyms.add( new ProgSym("l", SymType.UNKNOWN) );
+		allSyms.add( new ProgSym("m", SymType.UNKNOWN) );
+		allSyms.add( new ProgSym("n", SymType.UNKNOWN) );
+		allSyms.add( new ProgSym("p", SymType.UNKNOWN) );
+		allSyms.add( new ProgSym("q", SymType.UNKNOWN) );
+		allSyms.add( new ProgSym("r", SymType.UNKNOWN) );
+		allSyms.add( new ProgSym("x", SymType.UNKNOWN) );
+		allSyms.add( new ProgSym("y", SymType.UNKNOWN) );
+		allSyms.add( new ProgSym("z", SymType.UNKNOWN) );
+		allSyms.add( new ProgSym("sort", SymType.UNKNOWN) );
+		allSyms.add( new ProgSym("fact", SymType.UNKNOWN) );
+		allSyms.add( new ProgSym("factor", SymType.UNKNOWN) );
+		allSyms.add( new ProgSym("main", SymType.UNKNOWN) );
+		allSyms.add( new ProgSym("min", SymType.UNKNOWN) );
+		allSyms.add( new ProgSym("max", SymType.UNKNOWN) );
+		allSyms.add( new ProgSym("average", SymType.UNKNOWN) );
+		allSyms.add( new ProgSym("short", SymType.UNKNOWN) );
 	}
 	
-	public static Set<String> getLegalSymbols() { return allSyms; }
+	public static Set<ProgSym> getLegalSymbols() { return new LinkedHashSet<ProgSym>(allSyms); }
 	public static Scope getCurrentScope() { return currentScope; }
 	public static void reset() { currentScope = new Scope( null ); }
 	
@@ -120,12 +120,12 @@ public class Scope
 		return retVal;
 	}
 	
-	public Set<ProgSym> getSymType( SymType type )
+	public Set<ProgSym> getDefinedSymbolsOfType( SymType type, boolean includeUnknown )
 	{
 		Set<ProgSym> symbols = getSymbols( true );
 		Set<ProgSym> retVal = new LinkedHashSet<ProgSym>();
 		for ( ProgSym s: symbols ) {
-			if ( s.type == type ) {
+			if ( s.type == type || (includeUnknown && s.type == SymType.UNKNOWN) ) {
 				retVal.add( s );
 			}
 		}
@@ -144,5 +144,26 @@ public class Scope
 		Set<ProgSym> retVal = new LinkedHashSet<ProgSym>();
 		retVal.addAll( scope.symbols );
 		return retVal;
+	}
+	
+	public Set<ProgSym> getUnusedSymbols()
+	{
+		Set<ProgSym> unused = getLegalSymbols();
+		unused.removeAll( getSymbols(true) ); 
+		return unused;
+	}
+	
+	public Set<ProgSym> getPossibleSymbolsOfType( SymType type )
+	{
+		/*
+		 * Returns symbols that have the specified type or are unused.
+		 * This represents names that could be used to hold type (either
+		 * because they already do or because we don't know what type
+		 * they hold).
+		 */
+		Set<ProgSym> unusedSyms = getUnusedSymbols();
+		Set<ProgSym> definedSyms = getDefinedSymbolsOfType( type, true );
+		definedSyms.addAll( unusedSyms );
+		return definedSyms;
 	}
 }

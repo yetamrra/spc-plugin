@@ -16,6 +16,7 @@ public class ProgSym
 		return this.name + "<" + this.type + ">";
 	}
 	
+	@Override
 	public boolean equals( Object rhs )
 	{
 		if ( rhs instanceof ProgSym ) {
@@ -23,5 +24,11 @@ public class ProgSym
 		} else {
 			return this.name.equals(rhs.toString());
 		}
+	}
+	
+	@Override
+	public int hashCode()
+	{
+		return name.hashCode();
 	}
 }

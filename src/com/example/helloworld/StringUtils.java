@@ -30,4 +30,9 @@ public class StringUtils
 		
 		return join( names, conjunction );
 	}
+	
+	static public String setToAlternates( Set<ProgSym> list )
+	{
+		return join(list," | ");
+	}
 }

@@ -21,10 +21,11 @@ public <standard_statements> = <statement>;
 			| call <function3args> with <expression> and <expression> and <expression>
 			;
 	
-<assignment> = Set <id> to <expression>
-			 | Set element (<number> | <definedSymbols>) of <id> to <expression>
-			 | Set <id> to <callExprFrags>
-			 | Set element (<number> | <definedSymbols>) of <id> to <callExprFrags>
+<assignment> = Set <possibleString> to <string> 
+			 | Set <possibleInt> to <expression>
+			 | Set element (<number> | <definedInts>) of <id> to <expression>
+			 | Set <nonFunction> to <callExprFrags>
+			 | Set element (<number> | <definedInts>) of <id> to <callExprFrags>
 			 ;
 
 <printFrags> = print <expression>
@@ -50,7 +51,7 @@ public <standard_statements> = <statement>;
 			 | <atom> (plus | minus | times | divided by | over) <atom>
              ;
 
-<atom> = <number> | <definedSymbols> | <arrayRef> | <string> ; 
+<atom> = <number> | <definedInts> | <definedStrings> | <arrayRef> | <string> ; 
 
 <callExprFrags> = the result of calling <function0args>
 				| the result of calling <function1args> with <expression>
@@ -58,7 +59,7 @@ public <standard_statements> = <statement>;
 				| the result of calling <function3args> with <expression> and <expression> and <expression>
                 ;
 
-<arrayRef> = element (<number> | <definedSymbols>) of <definedSymbols> ;
+<arrayRef> = element (<number> | <definedInts>) of <definedArrays> ;
 
 <withFrags> = with <expression> (and <expression>)*
             ;
@@ -76,5 +77,19 @@ public <standard_statements> = <statement>;
 <function3args> = <VOID> ;
 
 <definedSymbols> = <VOID> ;
+
+<nonFunction> = <id> ;
+
+<possibleString> = <id> ;
+
+<possibleInt> = <id> ;
+
+<possibleArray> = <id> ;
+
+<definedInts> = <id> ;
+
+<definedStrings> = <id> ;
+
+<definedArrays> = <id> ;
 
 <string> = the string {goto_string} ;

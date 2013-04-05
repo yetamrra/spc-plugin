@@ -51,11 +51,9 @@ class SLBehavior extends NewGrammarDialogNodeBehavior {
         
         List<JSGFRuleName> imports = getGrammar().getRuleGrammar().getImports();
         boolean doImports = false;
-        boolean doFunctions = true;
         for ( JSGFRuleName name: imports ) {
         	if ( name.getRuleName().equals("statement.standard_statements") ) {
         		doImports = true;
-        		doFunctions = false;
         		break;
         	}
         }
@@ -70,13 +68,11 @@ class SLBehavior extends NewGrammarDialogNodeBehavior {
         // Replace the definedSymbols rule with a list of our defined symbols
         String symbols;
         String undefSym;
-        Set<String> allSyms = Scope.getLegalSymbols();
         if ( System.getProperty("org.bxg.spokencompiler.UseScoping") != null ) {
         	Set<ProgSym> curSyms = Scope.getCurrentScope().getSymbols(true);
-	        symbols = StringUtils.join( curSyms, " | " );
-	        Set<String> s = new LinkedHashSet<String>( allSyms );
-	        s.removeAll( curSyms );
-	        undefSym = StringUtils.join( new LinkedList<String>(s), " | " );
+	        symbols = StringUtils.setToAlternates( curSyms );
+	        Set<ProgSym> s = Scope.getCurrentScope().getUnusedSymbols();
+	        undefSym = StringUtils.setToAlternates( s );
         } else {
         	symbols = "<id>";
         	undefSym = "<id>";
@@ -87,36 +83,68 @@ class SLBehavior extends NewGrammarDialogNodeBehavior {
         String function1args;
         String function2args;
         String function3args;
+        String unusedFunction;
         if ( System.getProperty("org.bxg.spokencompiler.UseTyping") != null ) {
-        	function0args = StringUtils.join( Scope.getCurrentScope().getSymType(SymType.FUNCTION0), " | " );
-        	function1args = StringUtils.join( Scope.getCurrentScope().getSymType(SymType.FUNCTION1), " | " );
-        	function2args = StringUtils.join( Scope.getCurrentScope().getSymType(SymType.FUNCTION2), " | " );
-        	function3args = StringUtils.join( Scope.getCurrentScope().getSymType(SymType.FUNCTION3), " | " );
+        	function0args = StringUtils.join( Scope.getCurrentScope().getDefinedSymbolsOfType(SymType.FUNCTION0,false), " | " );
+        	function1args = StringUtils.join( Scope.getCurrentScope().getDefinedSymbolsOfType(SymType.FUNCTION1,false), " | " );
+        	function2args = StringUtils.join( Scope.getCurrentScope().getDefinedSymbolsOfType(SymType.FUNCTION2,false), " | " );
+        	function3args = StringUtils.join( Scope.getCurrentScope().getDefinedSymbolsOfType(SymType.FUNCTION3,false), " | " );
 
         	// List of unused function symbols
-            if ( doFunctions ) {
-            	Set<String> s = new LinkedHashSet<String>( allSyms );
-            	Set<ProgSym> f = Scope.getCurrentScope().getFunctions(-1) ;
-            	for ( ProgSym p: f ) {
-            		s.remove( p.name );
-            	}
-            	String unusedFunction = StringUtils.join( new LinkedList<String>(s), " | " );
-    	        makeRule( ruleGrammar, "unusedFunction", unusedFunction );
-            }
-
+        	Set<ProgSym> s = Scope.getLegalSymbols();
+        	Set<ProgSym> f = Scope.getCurrentScope().getFunctions(-1) ;
+        	s.removeAll( f );
+        	unusedFunction = StringUtils.join( s, " | " );
         } else {
         	function0args = symbols;
         	function1args = symbols;
         	function2args = symbols;
         	function3args = symbols;
+        	unusedFunction = symbols;
         }
 
+        
+        // Define rules for variable expressions
+        String nonFunction;
+        String possibleInt;
+        String possibleString;
+        String definedInts;
+        String definedStrings;
+        String possibleArray;
+        String definedArrays;
+        if ( System.getProperty("org.bxg.spokencompiler.UseTyping") != null ) {
+        	nonFunction = unusedFunction;
+        	Scope s = Scope.getCurrentScope();
+        	definedInts = StringUtils.setToAlternates( s.getDefinedSymbolsOfType(SymType.INT,true) );
+        	possibleInt = StringUtils.setToAlternates( s.getPossibleSymbolsOfType(SymType.INT) );
+        	definedStrings = StringUtils.setToAlternates( s.getDefinedSymbolsOfType(SymType.STRING,true) );
+        	possibleString = StringUtils.setToAlternates( s.getPossibleSymbolsOfType(SymType.STRING) );
+        	definedArrays = StringUtils.setToAlternates( s.getDefinedSymbolsOfType(SymType.ARRAY,true) );
+        	possibleArray = StringUtils.setToAlternates( s.getPossibleSymbolsOfType(SymType.ARRAY) );
+        } else {
+        	nonFunction = symbols;
+            possibleInt = symbols;
+            possibleString = symbols;
+            definedInts = symbols;
+            definedStrings = symbols;
+            possibleArray = symbols;
+            definedArrays = symbols;
+        }
         
         makeRule( ruleGrammar, "definedSymbols", symbols );
         makeRule( ruleGrammar, "function0args", function0args );
         makeRule( ruleGrammar, "function1args", function1args );
         makeRule( ruleGrammar, "function2args", function2args );
         makeRule( ruleGrammar, "function3args", function3args );
+        makeRule( ruleGrammar, "unusedFunction", unusedFunction );
+        makeRule( ruleGrammar, "nonFunction", nonFunction );
+        makeRule( ruleGrammar, "undefSym", undefSym );
+        makeRule( ruleGrammar, "possibleInt", possibleInt );
+        makeRule( ruleGrammar, "possibleString", possibleString );
+        makeRule( ruleGrammar, "definedInts", definedInts );
+        makeRule( ruleGrammar, "definedStrings", definedStrings );
+        makeRule( ruleGrammar, "possibleArray", possibleArray );
+        makeRule( ruleGrammar, "definedArrays", definedArrays );
         
         getGrammar().commitChanges();
         grammarChanged();
