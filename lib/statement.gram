@@ -52,7 +52,10 @@ public <standard_statements> = <statement>;
 
 <atom> = <number> | <definedSymbols> | <arrayRef> | <string> ; 
 
-<callExprFrags> = the result of calling <definedSymbols> [ <withFrags> ]
+<callExprFrags> = the result of calling <function0args>
+				| the result of calling <function1args> with <expression>
+				| the result of calling <function2args> with <expression> and <expression>
+				| the result of calling <function3args> with <expression> and <expression> and <expression>
                 ;
 
 <arrayRef> = element (<number> | <definedSymbols>) of <definedSymbols> ;
