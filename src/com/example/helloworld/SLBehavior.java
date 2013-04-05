@@ -5,6 +5,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.LinkedHashSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
@@ -49,9 +51,11 @@ class SLBehavior extends NewGrammarDialogNodeBehavior {
         
         List<JSGFRuleName> imports = getGrammar().getRuleGrammar().getImports();
         boolean doImports = false;
+        boolean doFunctions = true;
         for ( JSGFRuleName name: imports ) {
         	if ( name.getRuleName().equals("statement.standard_statements") ) {
         		doImports = true;
+        		doFunctions = false;
         		break;
         	}
         }
@@ -65,12 +69,20 @@ class SLBehavior extends NewGrammarDialogNodeBehavior {
         
         // Replace the definedSymbols rule with a list of our defined symbols
         String symbols;
+        String undefSym;
+        Set<String> allSyms = Scope.getLegalSymbols();
         if ( System.getProperty("org.bxg.spokencompiler.UseScoping") != null ) {
-	        symbols = StringUtils.join( Scope.getCurrentScope().getSymbols(true), " | " );
+        	Set<ProgSym> curSyms = Scope.getCurrentScope().getSymbols(true);
+	        symbols = StringUtils.join( curSyms, " | " );
+	        Set<String> s = new LinkedHashSet<String>( allSyms );
+	        s.removeAll( curSyms );
+	        undefSym = StringUtils.join( new LinkedList<String>(s), " | " );
         } else {
         	symbols = "<id>";
+        	undefSym = "<id>";
         }
 
+        // Define rules for functions of various arity
         String function0args;
         String function1args;
         String function2args;
@@ -80,12 +92,25 @@ class SLBehavior extends NewGrammarDialogNodeBehavior {
         	function1args = StringUtils.join( Scope.getCurrentScope().getSymType(SymType.FUNCTION1), " | " );
         	function2args = StringUtils.join( Scope.getCurrentScope().getSymType(SymType.FUNCTION2), " | " );
         	function3args = StringUtils.join( Scope.getCurrentScope().getSymType(SymType.FUNCTION3), " | " );
+
+        	// List of unused function symbols
+            if ( doFunctions ) {
+            	Set<String> s = new LinkedHashSet<String>( allSyms );
+            	Set<ProgSym> f = Scope.getCurrentScope().getFunctions(-1) ;
+            	for ( ProgSym p: f ) {
+            		s.remove( p.name );
+            	}
+            	String unusedFunction = StringUtils.join( new LinkedList<String>(s), " | " );
+    	        makeRule( ruleGrammar, "unusedFunction", unusedFunction );
+            }
+
         } else {
         	function0args = symbols;
         	function1args = symbols;
         	function2args = symbols;
         	function3args = symbols;
         }
+
         
         makeRule( ruleGrammar, "definedSymbols", symbols );
         makeRule( ruleGrammar, "function0args", function0args );

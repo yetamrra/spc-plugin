@@ -13,9 +13,33 @@ public class Scope
 		allSyms.add( "a" );
 		allSyms.add( "b" );
 		allSyms.add( "c" );
+		allSyms.add( "d" );
+		allSyms.add( "e" );
+		allSyms.add( "f" );
+		allSyms.add( "g" );
+		allSyms.add( "i" );
+		allSyms.add( "j" );
+		allSyms.add( "k" );
+		allSyms.add( "l" );
+		allSyms.add( "m" );
+		allSyms.add( "n" );
+		allSyms.add( "p" );
+		allSyms.add( "q" );
+		allSyms.add( "r" );
+		allSyms.add( "x" );
+		allSyms.add( "y" );
+		allSyms.add( "z" );
+		allSyms.add( "sort" );
+		allSyms.add( "fact" );
+		allSyms.add( "factor" );
 		allSyms.add( "main" );
+		allSyms.add( "min" );
+		allSyms.add( "max" );
+		allSyms.add( "average" );
+		allSyms.add( "short" );
 	}
 	
+	public static Set<String> getLegalSymbols() { return allSyms; }
 	public static Scope getCurrentScope() { return currentScope; }
 	public static void reset() { currentScope = new Scope( null ); }
 	
