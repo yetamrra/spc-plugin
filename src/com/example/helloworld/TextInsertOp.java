@@ -34,6 +34,10 @@ public class TextInsertOp implements Runnable
 	@Override
 	public void run()
 	{
+		boolean doGC = false;
+		if ( insertText.equals("end function") ) {
+			doGC = true;
+		}
 		IWorkbenchPage page = window.getActivePage();
 		IEditorPart part = page.getActiveEditor();
 		if (!(part instanceof AbstractTextEditor) )
@@ -57,6 +61,11 @@ public class TextInsertOp implements Runnable
 			previousInserts.push( t );
 			//editor.setHighlightRange( offset+insertText.length(), 0, true );
 			System.out.println( "Insert: " + previousInserts );
+			if ( doGC ) {
+	        	// Try to request garbage collection after functions to reduce
+	        	// large pauses
+	        	System.gc();
+			}
 		} catch (BadLocationException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
