@@ -148,7 +148,13 @@ class SLBehavior extends NewGrammarDialogNodeBehavior {
         
         getGrammar().commitChanges();
         grammarChanged();
-        System.out.println( ruleGrammar );    	
+        System.out.println( ruleGrammar );
+        
+        if ( !doImports ) {
+        	// Try to request garbage collection after functions to reduce
+        	// large pauses
+        	System.gc();
+        }
     }
     
     void makeRule( RuleGrammar ruleGrammar, String ruleName, String ruleText ) throws JSGFGrammarException
