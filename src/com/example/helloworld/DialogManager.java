@@ -236,6 +236,7 @@ public class DialogManager implements Configurable {
 						// Clear our state and start over
 						savedStates.clear();
 						lineActions.clear();
+						Scope.reset();
 						curNode = initialNode;
 						savedStates.push( curNode );
 						lineActions.push( new LineAction(LineAction.ActionType.UNCHANGED,null) );
