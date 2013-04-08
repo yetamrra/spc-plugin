@@ -230,14 +230,30 @@ public class SpeechListener implements Runnable, SLResultListener {
 		
 		// A scalar assignment creates a new variable in the current scope
 		// if it doesn't already exist
-		p = Pattern.compile( "^set (\\w+) to" );
+		p = Pattern.compile( "^set (\\w+) to (.*)" );
 		m = p.matcher( text );
 		if ( m.find() ) {
 			String id = m.group(1);
 			Scope s = Scope.getCurrentScope();
 			if ( !s.isDefined(id,true) ) {
-				// FIXME: Try to type this
-				s.define(id, SymType.UNKNOWN);
+				String val = m.group(2).trim();
+				SymType type = SymType.UNKNOWN;
+				if ( val.matches("\\d+") ) {
+					type = SymType.INT;
+				} else if ( val.matches("element .* of .*") ) {
+					// FIXME: This is cheating.  It only works because none
+					// of the sample programs have arrays of strings.
+					type = SymType.INT;
+				} else if ( val.matches("the string") ) {
+					type = SymType.STRING;
+				} else if ( val.matches(".*\\s[+/*-]\\s.*") ) {
+					// FIXME: Can we do this better than just looking for
+					// operators?
+					type = SymType.INT;
+				} else {
+					// FIXME: Try to type this
+				}
+				s.define(id, type);
 			}
 			updateBehavior( behavior );
 			return;
