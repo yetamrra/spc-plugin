@@ -11,5 +11,4 @@ import <editing_commands.editing_commands>;
 
 public <function_body> 	= end function {out}
 					   	| <standard_statements>
-					   	| <editing_commands>
 						;

@@ -1,6 +1,8 @@
 package com.example.helloworld;
 
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Set;
 
 public class StringUtils
 {
@@ -17,5 +19,20 @@ public class StringUtils
 	      sb.append(item);
 	   }
 	   return sb.toString();
+	}
+	
+	static public String join( Set<ProgSym> list, String conjunction )
+	{
+		List<String> names = new LinkedList<String>();
+		for ( ProgSym s: list ) {
+			names.add( s.name );
+		}
+		
+		return join( names, conjunction );
+	}
+	
+	static public String setToAlternates( Set<ProgSym> list )
+	{
+		return join(list," | ");
 	}
 }

@@ -1,17 +1,45 @@
 package com.example.helloworld;
 
 import java.util.LinkedHashSet;
-import java.util.LinkedList;
-import java.util.List;
 import java.util.Set;
 
 public class Scope
 {
 	static Scope currentScope = new Scope( null );
+	static Set<ProgSym> allSyms;
 	
-	private Scope parentScope;
-	private Set<String> symbols;
+	static {
+		allSyms = new LinkedHashSet<ProgSym>();
+		allSyms.add( new ProgSym("a", SymType.UNKNOWN) );
+		allSyms.add( new ProgSym("b", SymType.UNKNOWN) );
+		allSyms.add( new ProgSym("c", SymType.UNKNOWN) );
+		allSyms.add( new ProgSym("d", SymType.UNKNOWN) );
+		allSyms.add( new ProgSym("e", SymType.UNKNOWN) );
+		allSyms.add( new ProgSym("f", SymType.UNKNOWN) );
+		allSyms.add( new ProgSym("g", SymType.UNKNOWN) );
+		allSyms.add( new ProgSym("i", SymType.UNKNOWN) );
+		allSyms.add( new ProgSym("j", SymType.UNKNOWN) );
+		allSyms.add( new ProgSym("k", SymType.UNKNOWN) );
+		allSyms.add( new ProgSym("l", SymType.UNKNOWN) );
+		allSyms.add( new ProgSym("m", SymType.UNKNOWN) );
+		allSyms.add( new ProgSym("n", SymType.UNKNOWN) );
+		allSyms.add( new ProgSym("p", SymType.UNKNOWN) );
+		allSyms.add( new ProgSym("q", SymType.UNKNOWN) );
+		allSyms.add( new ProgSym("r", SymType.UNKNOWN) );
+		allSyms.add( new ProgSym("x", SymType.UNKNOWN) );
+		allSyms.add( new ProgSym("y", SymType.UNKNOWN) );
+		allSyms.add( new ProgSym("z", SymType.UNKNOWN) );
+		allSyms.add( new ProgSym("sort", SymType.UNKNOWN) );
+		allSyms.add( new ProgSym("fact", SymType.UNKNOWN) );
+		allSyms.add( new ProgSym("factor", SymType.UNKNOWN) );
+		allSyms.add( new ProgSym("main", SymType.UNKNOWN) );
+		allSyms.add( new ProgSym("min", SymType.UNKNOWN) );
+		allSyms.add( new ProgSym("max", SymType.UNKNOWN) );
+		allSyms.add( new ProgSym("average", SymType.UNKNOWN) );
+		allSyms.add( new ProgSym("short", SymType.UNKNOWN) );
+	}
 	
+	public static Set<ProgSym> getLegalSymbols() { return new LinkedHashSet<ProgSym>(allSyms); }
 	public static Scope getCurrentScope() { return currentScope; }
 	public static void reset() { currentScope = new Scope( null ); }
 	
@@ -30,9 +58,12 @@ public class Scope
 		return currentScope;
 	}
 	
+	private Scope parentScope;
+	private Set<ProgSym> symbols;
+	
 	public Scope( Scope parent )
 	{
-		symbols = new LinkedHashSet<String>();
+		symbols = new LinkedHashSet<ProgSym>();
 		parentScope = parent;
 	}
 	
@@ -43,7 +74,7 @@ public class Scope
 			depth = parentScope.toSymbolTree();
 		}
 		
-		for ( String s: symbols ) {
+		for ( ProgSym s: symbols ) {
 			for ( int i=0; i<=depth; i++ ) {
 			    System.out.print( "  " );
 			}
@@ -53,9 +84,9 @@ public class Scope
 		return depth + 1;
 	}
 	
-	public void define( String name )
+	public void define( String name, SymType type )
 	{
-		symbols.add( name );
+		symbols.add( new ProgSym(name,type) );
 		System.out.println( "Defined symbol " + name );
 	}
 	
@@ -78,14 +109,61 @@ public class Scope
 		return parentScope;
 	}
 	
-	public List<String> getSymbols( boolean recurse )
+	public Set<ProgSym> getSymbols( boolean recurse )
 	{
-		List<String> retVal = new LinkedList<String>();
+		Set<ProgSym> retVal = new LinkedHashSet<ProgSym>();
 		retVal.addAll( symbols );
 		if ( recurse && parentScope != null ) {
 			retVal.addAll( parentScope.getSymbols(recurse) );
 		}
 		
 		return retVal;
+	}
+	
+	public Set<ProgSym> getDefinedSymbolsOfType( SymType type, boolean includeUnknown )
+	{
+		Set<ProgSym> symbols = getSymbols( true );
+		Set<ProgSym> retVal = new LinkedHashSet<ProgSym>();
+		for ( ProgSym s: symbols ) {
+			if ( s.type == type || (includeUnknown && s.type == SymType.UNKNOWN) ) {
+				retVal.add( s );
+			}
+		}
+		return retVal;
+	}
+	
+	public Set<ProgSym> getFunctions( int argLimit )
+	{
+		// Functions are only defined at the top level,
+		// and nothing else is, so we'll cheat by
+		// just returning the top-level symbols
+		Scope scope = this;
+		while ( scope.parentScope != null ) {
+			scope = scope.parentScope;
+		}
+		Set<ProgSym> retVal = new LinkedHashSet<ProgSym>();
+		retVal.addAll( scope.symbols );
+		return retVal;
+	}
+	
+	public Set<ProgSym> getUnusedSymbols()
+	{
+		Set<ProgSym> unused = getLegalSymbols();
+		unused.removeAll( getSymbols(true) ); 
+		return unused;
+	}
+	
+	public Set<ProgSym> getPossibleSymbolsOfType( SymType type )
+	{
+		/*
+		 * Returns symbols that have the specified type or are unused.
+		 * This represents names that could be used to hold type (either
+		 * because they already do or because we don't know what type
+		 * they hold).
+		 */
+		Set<ProgSym> unusedSyms = getUnusedSymbols();
+		Set<ProgSym> definedSyms = getDefinedSymbolsOfType( type, true );
+		definedSyms.addAll( unusedSyms );
+		return definedSyms;
 	}
 }
