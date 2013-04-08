@@ -25,6 +25,7 @@ public <standard_statements> = <statement>;
 			 ;
 
 <printFrags> = print <expression>
+			 | print <callExprFrags>
 			 | print space
              | new line
              ;
