@@ -6,7 +6,11 @@
 
 grammar string;
 
-public <string> = <any_words> ;
+import <editing_commands.editing_commands>;
+
+public <string> = <any_words>
+				| <editing_commands> 
+				;
 
 <any_words> = (Hello World) {out} 
 			| (Hello) {out}
