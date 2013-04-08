@@ -52,7 +52,7 @@ public <standard_statements> = <statement>;
 			 | <atom> (plus | minus | times | divided by | over) <atom>
              ;
 
-<atom> = <definedInts> | <definedStrings> | <arrayRef> | <string> | <number> ; 
+<atom> = <definedInts> | <definedStrings> | <definedArrays> | <arrayRef> | <string> | <number> ; 
 
 <callExprFrags> = the result of calling <function0args>
 				| the result of calling <function1args> with <expression>
