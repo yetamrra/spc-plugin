@@ -144,6 +144,18 @@ class SLBehavior extends NewGrammarDialogNodeBehavior {
         makeRule( ruleGrammar, "possibleArray", possibleArray );
         makeRule( ruleGrammar, "definedArrays", definedArrays );
         
+        // In non-interactive mode, turn off the editing rules
+        if ( !SpeechManager.getManager().isInteractive() ) {
+            if ( doImports ) {
+            	jGram = getGrammar().getGrammarManager().retrieveGrammar( "editing_commands" );
+            	RuleGrammar g = new BaseRuleGrammar(recognizer, jGram);
+            	makeRule( g, "statement", "<VOID>" );
+            	System.out.println( g );
+            } else {
+            	makeRule( ruleGrammar, "editing_commands", "<VOID>" );
+            }
+        }
+        
         getGrammar().commitChanges();
         grammarChanged();
         System.out.println( ruleGrammar );

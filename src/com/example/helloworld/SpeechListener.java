@@ -72,6 +72,9 @@ public class SpeechListener implements Runnable, SLResultListener {
 	        if ( this.audioURL != null ) {
 	        	AudioFileDataSource dataSource = (AudioFileDataSource) configManager.lookup("audioFileDataSource");
 	        	dataSource.setAudioFile(audioURL, null);
+	        	SpeechManager.getManager().setInteractive( false );
+	        } else {
+	        	SpeechManager.getManager().setInteractive( true );
 	        }
 
             System.out.println("Running  ...");
@@ -391,7 +394,12 @@ public class SpeechListener implements Runnable, SLResultListener {
 					newTag = "inserted";
 				}
 			} else {
-				newTag = null;
+				if ( !SpeechManager.getManager().isInteractive() ) {
+					insertText( "*missed utterance*", context, null, behavior );
+					newTag = "inserted";
+				} else {
+					newTag = null;
+				}
 			}
 		}
 		

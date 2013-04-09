@@ -23,6 +23,7 @@ public class SpeechManager
 	private SpeechListener listener;
 	private boolean canceled;
 	private Thread listenerThread;
+	private boolean interactive;
 	
 	private SpeechManager()
 	{
@@ -34,6 +35,7 @@ public class SpeechManager
 		listener = null;
 		canceled = false;
 		listenerThread = null;
+		interactive = true;
 	}
 	
 	public void setView( SpokenLangView view )
@@ -124,5 +126,15 @@ public class SpeechManager
 	public boolean isCanceled()
 	{
 		return canceled;
+	}
+	
+	public void setInteractive( boolean interactive )
+	{
+		this.interactive = interactive;
+	}
+	
+	public boolean isInteractive()
+	{
+		return this.interactive;
 	}
 }
