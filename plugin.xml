@@ -31,6 +31,12 @@
    			name="Restart Dictation"
    			description="Clear the buffer and restart the microphone"
    			id="com.example.helloworld.commands.restartDictation" />
+     <command
+           categoryId="com.example.helloworld.commands.category"
+           description="Process all wav files found under the selected folder"
+           id="com.example.helloword.commands.processAllFiles"
+           name="Process All Files">
+     </command>
    </extension>
    <extension point="org.eclipse.ui.menus">
    		<menuContribution locationURI="menu:org.eclipse.ui.main.menu?after=additions">
@@ -51,6 +57,10 @@
              commandId="com.example.helloworld.commands.processAudioFile"
              icon="icons/audio.png"
              id="com.example.helloworld.menus.processAudioFileMenu">
+       </command>
+       <command
+             commandId="com.example.helloword.commands.processAllFiles"
+             id="com.example.helloworld.menus.processAllFilesMenu">
        </command>
    			</menu>
    		</menuContribution>
@@ -123,6 +133,10 @@
               </and>
            </with>
         </enabledWhen>
+     </handler>
+     <handler
+           class="com.example.helloworld.handlers.ProcessAllFiles"
+           commandId="com.example.helloword.commands.processAllFiles">
      </handler>
    </extension>
    <extension
