@@ -16,3 +16,5 @@ public <string> = <any_words>
 			| (Hello) {out}
 			| g {out}
 			;
+
+<id> = <VOID> ;
