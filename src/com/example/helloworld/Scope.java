@@ -1,5 +1,6 @@
 package com.example.helloworld;
 
+import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
@@ -93,8 +94,9 @@ public class Scope
 	public boolean isDefined( String name, boolean recurse )
 	{
 		Scope s = currentScope;
+		ProgSym tmpSym = new ProgSym( name, SymType.UNKNOWN );
 		while ( s != null ) {
-			if ( s.symbols.contains(name) ) {
+			if ( s.symbols.contains(tmpSym) ) {
 				return true;
 			} else {
 				s = recurse ? s.parentScope : null;
@@ -102,6 +104,28 @@ public class Scope
 		}
 		
 		return false;
+	}
+	
+	public void setType( String name, SymType type, boolean recurse )
+	{
+		Scope s = currentScope;
+		ProgSym tmpSym = new ProgSym( name, SymType.UNKNOWN );
+		while ( s != null ) {
+			if ( s.symbols.contains(tmpSym) ) {
+				Iterator<ProgSym> i = s.symbols.iterator();
+				while ( i.hasNext() ) {
+					ProgSym sym = i.next();
+					if ( sym.equals(name) ) {
+						if ( sym.type == SymType.UNKNOWN ) {
+							sym.type = type;
+						}
+						return;
+					}
+				}
+			} else {
+				s = recurse ? s.parentScope : null;
+			}
+		}
 	}
 	
 	public Scope getParent()

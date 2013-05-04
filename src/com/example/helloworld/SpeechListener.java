@@ -231,6 +231,34 @@ public class SpeechListener implements Runnable, SLResultListener {
 			return;
 		}
 		
+		// Use as an array makes it an array but doesn't 
+		// define a new symbol.  It also makes the index an int.
+		// Hitting this doesn't terminate the checks because
+		// these can also trigger other statements below.
+		p = Pattern.compile( "element (.*?) of (\\w+)" );
+		m = p.matcher( text );
+		while ( m.find() ) {
+			String lhs = m.group(1);
+			String rhs = m.group(2); 
+			Scope s = Scope.getCurrentScope();
+			s.setType( lhs, SymType.INT, true );
+			s.setType( rhs, SymType.ARRAY, true );
+		}
+		
+		// Use in an arithmetic expression or boolean comparison
+		// makes it a number but doesn't define a new symbol
+		// Hitting this doesn't terminate the checks because
+		// these can also trigger other statements below.
+		p = Pattern.compile( "(\\w+) ([-+*/<>]=?) (\\w+)" );
+		m = p.matcher( text );
+		if ( m.find() ) {
+			String lhs = m.group(1);
+			String rhs = m.group(3); 
+			Scope s = Scope.getCurrentScope();
+			s.setType( lhs, SymType.INT, true );
+			s.setType( rhs, SymType.INT, true );
+		}
+		
 		// A scalar assignment creates a new variable in the current scope
 		// if it doesn't already exist
 		p = Pattern.compile( "^set (\\w+) to (.*)" );
@@ -302,7 +330,7 @@ public class SpeechListener implements Runnable, SLResultListener {
 			updateBehavior( behavior );
 			return;
 		}
-
+		
 		// Hitting an if-then or a while-do creates a new scope
 		p = Pattern.compile( "^if .* then" );
 		m = p.matcher( text );
