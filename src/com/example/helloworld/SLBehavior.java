@@ -98,7 +98,7 @@ class SLBehavior extends NewGrammarDialogNodeBehavior {
         	function1args = symbols;
         	function2args = symbols;
         	function3args = symbols;
-        	unusedFunction = symbols;
+        	unusedFunction = undefSym;
         }
 
         
@@ -121,11 +121,11 @@ class SLBehavior extends NewGrammarDialogNodeBehavior {
         	possibleArray = StringUtils.setToAlternates( s.getPossibleSymbolsOfType(SymType.ARRAY) );
         } else {
         	nonFunction = symbols;
-            possibleInt = symbols;
-            possibleString = symbols;
+            possibleInt = "<id>";
+            possibleString = "<id>";
             definedInts = symbols;
             definedStrings = symbols;
-            possibleArray = symbols;
+            possibleArray = "<id>";
             definedArrays = symbols;
         }
         
