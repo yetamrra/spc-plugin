@@ -14,6 +14,7 @@ Class-Path: /home/ben/Projects/sphinx/spinx4-1.0beta5/lib/WSJ_8gau_13dCep_16k_40
 Bundle-ClassPath: .,
  lib/WSJ_8gau_13dCep_16k_40mel_130Hz_6800Hz.jar,
  lib/jsapi.jar,
+ lib/sphinx4.jar,
  lib/
 Import-Package: org.eclipse.core.resources,
  org.eclipse.jface.text,

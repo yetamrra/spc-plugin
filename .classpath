@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
 	<classpathentry exported="true" kind="lib" path="lib/"/>
-	<classpathentry exported="true" kind="lib" path="lib/WSJ_8gau_13dCep_16k_40mel_130Hz_6800Hz.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.6"/>
 	<classpathentry kind="con" path="org.eclipse.pde.core.requiredPlugins"/>
 	<classpathentry kind="src" path="src"/>
@@ -19,6 +18,8 @@
 	<classpathentry kind="var" path="SPHINX_HOME/lib/junit-4.8.1.jar"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/grammar"/>
 	<classpathentry kind="lib" path="/grammar/bin"/>
-	<classpathentry kind="lib" path="/Users/ben/Documents/Classes/Dissertation/workspace/grammar/lib/antlr-3.4-complete.jar"/>
+	<classpathentry kind="lib" path="/grammar/lib/antlr-3.5.2-complete.jar"/>
+	<classpathentry kind="var" path="SPHINX_HOME/lib/WSJ_8gau_13dCep_16k_40mel_130Hz_6800Hz.jar"/>
+	<classpathentry kind="var" path="SPHINX_HOME/lib/jsapi-1.0-base.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
