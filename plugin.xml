@@ -5,34 +5,34 @@
    		<category
    			name="Spoken Compiler"
    			description="Commands related to the spoken compiler"
-   			id="com.example.helloworld.commands.category" />
+   			id="org.bxg.spokencompiler.eclipse.commands.category" />
    		<command
-   			categoryId="com.example.helloworld.commands.category"
+   			categoryId="org.bxg.spokencompiler.eclipse.commands.category"
    			name="Compile"
    			description="Compile the current file"
-   			id="com.example.helloworld.commands.compile" />
+   			id="org.bxg.spokencompiler.eclipse.commands.compile" />
    		<command
-   			categoryId="com.example.helloworld.commands.category"
+   			categoryId="org.bxg.spokencompiler.eclipse.commands.category"
    			name="Process Audio File"
    			description="Process the selected wav file as speech input"
-   			id="com.example.helloworld.commands.processAudioFile" />
+   			id="org.bxg.spokencompiler.eclipse.commands.processAudioFile" />
    		<command
-   			categoryId="com.example.helloworld.commands.category"
+   			categoryId="org.bxg.spokencompiler.eclipse.commands.category"
    			name="Start Dictation"
    			description="Start Dictating a Program"
-   			id="com.example.helloworld.commands.startDictation" />
+   			id="org.bxg.spokencompiler.eclipse.commands.startDictation" />
    		<command
-   			categoryId="com.example.helloworld.commands.category"
+   			categoryId="org.bxg.spokencompiler.eclipse.commands.category"
    			name="Stop Dictation"
    			description="Stop Dictating and turn off the microphone"
-   			id="com.example.helloworld.commands.stopDictation" />
+   			id="org.bxg.spokencompiler.eclipse.commands.stopDictation" />
    		<command
-   			categoryId="com.example.helloworld.commands.category"
+   			categoryId="org.bxg.spokencompiler.eclipse.commands.category"
    			name="Restart Dictation"
    			description="Clear the buffer and restart the microphone"
-   			id="com.example.helloworld.commands.restartDictation" />
+   			id="org.bxg.spokencompiler.eclipse.commands.restartDictation" />
      <command
-           categoryId="com.example.helloworld.commands.category"
+           categoryId="org.bxg.spokencompiler.eclipse.commands.category"
            description="Process all wav files found under the selected folder"
            id="com.example.helloword.commands.processAllFiles"
            name="Process All Files">
@@ -40,78 +40,78 @@
    </extension>
    <extension point="org.eclipse.ui.menus">
    		<menuContribution locationURI="menu:org.eclipse.ui.main.menu?after=additions">
-   			<menu id="com.example.helloworld.menus.spokenProgramMenu" label="Spoken Programming">
+   			<menu id="org.bxg.spokencompiler.eclipse.menus.spokenProgramMenu" label="Spoken Programming">
    				<command 
-   					commandId="com.example.helloworld.commands.startDictation"
-   					id="com.example.helloworld.menus.startDictationMenu"
+   					commandId="org.bxg.spokencompiler.eclipse.commands.startDictation"
+   					id="org.bxg.spokencompiler.eclipse.menus.startDictationMenu"
    					icon="icons/microphone.png" />
    				<command 
-   					commandId="com.example.helloworld.commands.stopDictation"
-   					id="com.example.helloworld.menus.stopDictationMenu"
+   					commandId="org.bxg.spokencompiler.eclipse.commands.stopDictation"
+   					id="org.bxg.spokencompiler.eclipse.menus.stopDictationMenu"
    					icon="icons/microphone-off.png" />
    				<command 
-   					commandId="com.example.helloworld.commands.restartDictation"
-   					id="com.example.helloworld.menus.restartDictationMenu"
+   					commandId="org.bxg.spokencompiler.eclipse.commands.restartDictation"
+   					id="org.bxg.spokencompiler.eclipse.menus.restartDictationMenu"
    					icon="icons/restart.png" />
    				<command
-             commandId="com.example.helloworld.commands.processAudioFile"
+             commandId="org.bxg.spokencompiler.eclipse.commands.processAudioFile"
              icon="icons/audio.png"
-             id="com.example.helloworld.menus.processAudioFileMenu">
+             id="org.bxg.spokencompiler.eclipse.menus.processAudioFileMenu">
        </command>
        <command
              commandId="com.example.helloword.commands.processAllFiles"
-             id="com.example.helloworld.menus.processAllFilesMenu">
+             id="org.bxg.spokencompiler.eclipse.menus.processAllFilesMenu">
        </command>
    			</menu>
    		</menuContribution>
    		<menuContribution locationURI="toolbar:org.eclipse.ui.main.toolbar?after=additions">
-   			<toolbar id="com.example.helloworld.toolbars.spokenProgram" label="Spoken Programming">
+   			<toolbar id="org.bxg.spokencompiler.eclipse.toolbars.spokenProgram" label="Spoken Programming">
    				<command 
-   					commandId="com.example.helloworld.commands.processAudioFile"
-   					id="com.example.helloworld.menus.processAudioFileMenu"
+   					commandId="org.bxg.spokencompiler.eclipse.commands.processAudioFile"
+   					id="org.bxg.spokencompiler.eclipse.menus.processAudioFileMenu"
    					icon="icons/audio.png" />
    				<command 
-   					commandId="com.example.helloworld.commands.startDictation"
-   					id="com.example.helloworld.toolbars.startDictation"
+   					commandId="org.bxg.spokencompiler.eclipse.commands.startDictation"
+   					id="org.bxg.spokencompiler.eclipse.toolbars.startDictation"
    					icon="icons/microphone.png" />
    				<command
-          		   	commandId="com.example.helloworld.commands.stopDictation"
+          		   	commandId="org.bxg.spokencompiler.eclipse.commands.stopDictation"
              		icon="icons/microphone-off.png"
-             		id="com.example.helloworld.toolbars.stopDictation">
+             		id="org.bxg.spokencompiler.eclipse.toolbars.stopDictation">
 	       		</command>
    				<command
-             		commandId="com.example.helloworld.commands.restartDictation"
+             		commandId="org.bxg.spokencompiler.eclipse.commands.restartDictation"
              		icon="icons/restart.png"
-             		id="com.example.helloworld.toolbars.restartDictation" />
+             		id="org.bxg.spokencompiler.eclipse.toolbars.restartDictation" />
    			</toolbar>
    		</menuContribution>
    </extension>
    <extension point="org.eclipse.ui.handlers">
    		<handler
-   			commandId="com.example.helloworld.commands.startDictation"
-   			class="com.example.helloworld.handlers.StartDictation">
+   			commandId="org.bxg.spokencompiler.eclipse.commands.startDictation"
+   			class="org.bxg.spokencompiler.eclipse.handlers.StartDictation">
    		<enabledWhen>
               <test
-                    property="com.example.helloworld.notListening">
+                    property="org.bxg.spokencompiler.eclipse.notListening">
               </test>
         </enabledWhen>
    		</handler>
    		<handler
-           class="com.example.helloworld.handlers.StopDictation"
-           commandId="com.example.helloworld.commands.stopDictation">
+           class="org.bxg.spokencompiler.eclipse.handlers.StopDictation"
+           commandId="org.bxg.spokencompiler.eclipse.commands.stopDictation">
         <enabledWhen>
               <test
-                    property="com.example.helloworld.isListening">
+                    property="org.bxg.spokencompiler.eclipse.isListening">
               </test>
         </enabledWhen>
      </handler>
    		<handler
-           class="com.example.helloworld.handlers.RestartDictation"
-           commandId="com.example.helloworld.commands.restartDictation">
+           class="org.bxg.spokencompiler.eclipse.handlers.RestartDictation"
+           commandId="org.bxg.spokencompiler.eclipse.commands.restartDictation">
      </handler>
    		<handler
-           class="com.example.helloworld.handlers.ProcessAudioFile"
-           commandId="com.example.helloworld.commands.processAudioFile">
+           class="org.bxg.spokencompiler.eclipse.handlers.ProcessAudioFile"
+           commandId="org.bxg.spokencompiler.eclipse.commands.processAudioFile">
         <enabledWhen>
            <with
                  variable="selection">
@@ -135,7 +135,7 @@
         </enabledWhen>
      </handler>
      <handler
-           class="com.example.helloworld.handlers.ProcessAllFiles"
+           class="org.bxg.spokencompiler.eclipse.handlers.ProcessAllFiles"
            commandId="com.example.helloword.commands.processAllFiles">
      </handler>
    </extension>
@@ -143,7 +143,7 @@
       id="SpokenBuilder" name="Spoken Compiler Builder" point="org.eclipse.core.resources.builders">
       <builder hasNature="true">
          <run 
-            class="com.example.helloworld.builders.SpokenBuilder">
+            class="org.bxg.spokencompiler.eclipse.builders.SpokenBuilder">
             <parameter name="optimize" value="true" />
             <parameter name="comment" value="Builder comment" />
          </run>
@@ -153,9 +153,9 @@
       id="SpokenBuilderNature"
       name="Spoken Compiler Builder"
       point="org.eclipse.core.resources.natures">
-      <builder id="com.example.helloworld.SpokenBuilder" />
+      <builder id="org.bxg.spokencompiler.eclipse.SpokenBuilder" />
       <runtime>
-         <run class="com.example.helloworld.builders.SpokenBuilderNature" />
+         <run class="org.bxg.spokencompiler.eclipse.builders.SpokenBuilderNature" />
       </runtime>
    </extension>
    <extension
@@ -163,7 +163,7 @@
       <perspectiveExtension
             targetID="org.eclipse.jdt.ui.JavaPerspective">
          <view
-               id="com.example.helloworld.views.SpokenLangView"
+               id="org.bxg.spokencompiler.eclipse.views.SpokenLangView"
                ratio="0.5"
                relationship="right"
                relative="org.eclipse.ui.views.ProblemView">
@@ -173,24 +173,24 @@
    <extension
          point="org.eclipse.ui.views">
       <category
-            id="com.example.helloworld"
+            id="org.bxg.spokencompiler.eclipse"
             name="Spoken Programming">
       </category>
       <view
             allowMultiple="false"
-            category="com.example.helloworld"
-            class="com.example.helloworld.views.SpokenLangView"
+            category="org.bxg.spokencompiler.eclipse"
+            class="org.bxg.spokencompiler.eclipse.views.SpokenLangView"
             icon="icons/microphone.png"
-            id="com.example.helloworld.views.SpokenLangView"
+            id="org.bxg.spokencompiler.eclipse.views.SpokenLangView"
             name="Spoken Programming">
       </view>
    </extension>
    <extension
          point="org.eclipse.core.expressions.propertyTesters">
       <propertyTester
-            class="com.example.helloworld.propertyTester.ListeningTester"
-            id="com.example.helloworld.listeningTester"
-            namespace="com.example.helloworld"
+            class="org.bxg.spokencompiler.eclipse.propertyTester.ListeningTester"
+            id="org.bxg.spokencompiler.eclipse.listeningTester"
+            namespace="org.bxg.spokencompiler.eclipse"
             properties="isListening, notListening"
             type="java.lang.Object">
       </propertyTester>

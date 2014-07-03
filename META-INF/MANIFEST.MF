@@ -1,14 +1,14 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Spoken Programming Plugin
-Bundle-SymbolicName: com.example.helloworld; singleton:=true
+Bundle-SymbolicName: org.bxg.spokencompiler.eclipse; singleton:=true
 Bundle-Version: 1.0.0
-Bundle-Activator: com.example.helloworld.Activator
+Bundle-Activator: org.bxg.spokencompiler.eclipse.Activator
 Bundle-Vendor: Benjamin Gordon
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime,
  org.eclipse.core.expressions
-Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Bundle-ActivationPolicy: lazy
 Class-Path: /home/ben/Projects/sphinx/spinx4-1.0beta5/lib/WSJ_8gau_13dCep_16k_40mel_130Hz_6800Hz.jar
 Bundle-ClassPath: .,
