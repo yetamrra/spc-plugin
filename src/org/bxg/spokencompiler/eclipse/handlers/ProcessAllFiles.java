@@ -83,8 +83,7 @@ public class ProcessAllFiles extends AbstractHandler
 		List<IFile> processFiles = getWavFiles(parent);
 		System.out.println( "Should process " + processFiles );
 		
-		/*
-		ile file = (IFile)sel.getFirstElement();
+		IFile file = (IFile)sel.getFirstElement();
 		if ( !file.getName().endsWith(".wav") ) {
 			return null;
 		}
@@ -101,8 +100,6 @@ public class ProcessAllFiles extends AbstractHandler
 			System.err.println( "Caught exception while processing " + file + ": " + e.getMessage() );
 		}
 
-
-		 */
 		return null;
 	}
 

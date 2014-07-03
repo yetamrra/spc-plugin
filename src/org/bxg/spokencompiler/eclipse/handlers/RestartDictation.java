@@ -55,8 +55,6 @@ public class RestartDictation extends AbstractHandler {
 			doc.set( "" );
 		}
 		
-		return null;
-		/*
 		String commandId = "org.bxg.spokencompiler.eclipse.commands.startDictation";
 		IWorkbenchSite site = HandlerUtil.getActiveSite(event);
 		Command command = ((ICommandService) site.getService(ICommandService.class)).getCommand(commandId);
@@ -74,7 +72,7 @@ public class RestartDictation extends AbstractHandler {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		return null;*/
+		return null;
 	}
 
 }
