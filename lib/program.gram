@@ -27,7 +27,7 @@
 
 grammar program;
 
-public <program> = <program.function> {goto_function}
+public <program> = <function> {goto_function}
 				 | <editing_commands>
 				 ;
 

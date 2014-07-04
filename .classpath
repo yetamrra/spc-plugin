@@ -4,7 +4,6 @@
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.6"/>
 	<classpathentry kind="con" path="org.eclipse.pde.core.requiredPlugins"/>
 	<classpathentry kind="src" path="src"/>
-	<classpathentry kind="src" path="spc"/>
 	<classpathentry kind="src" path="sphinx4"/>
 	<classpathentry kind="src" path="apps"/>
 	<classpathentry kind="src" path="jsapi"/>
@@ -13,7 +12,7 @@
 	<classpathentry kind="src" path="scripts"/>
 	<classpathentry kind="var" path="SPHINX_HOME/lib/js.jar"/>
 	<classpathentry kind="var" path="SPHINX_HOME/lib/jsapi.jar"/>
-	<classpathentry kind="var" path="SPHINX_HOME/lib/sphinx4.jar"/>
+	<classpathentry kind="var" path="SPHINX_HOME/lib/sphinx4.jar" sourcepath="/SPHINX_HOME/src/sphinx4"/>
 	<classpathentry kind="var" path="SPHINX_HOME/lib/tags.jar"/>
 	<classpathentry kind="var" path="SPHINX_HOME/lib/junit-4.8.1.jar"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/grammar"/>
