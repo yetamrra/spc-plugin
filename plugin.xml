@@ -34,7 +34,7 @@
      <command
            categoryId="org.bxg.spokencompiler.eclipse.commands.category"
            description="Process all wav files found under the selected folder"
-           id="com.example.helloword.commands.processAllFiles"
+           id="org.bxg.spokencompiler.eclipse.commands.processAllFiles"
            name="Process All Files">
      </command>
    </extension>
@@ -59,7 +59,7 @@
              id="org.bxg.spokencompiler.eclipse.menus.processAudioFileMenu">
        </command>
        <command
-             commandId="com.example.helloword.commands.processAllFiles"
+             commandId="org.bxg.spokencompiler.eclipse.commands.processAllFiles"
              id="org.bxg.spokencompiler.eclipse.menus.processAllFilesMenu">
        </command>
    			</menu>
@@ -136,7 +136,7 @@
      </handler>
      <handler
            class="org.bxg.spokencompiler.eclipse.handlers.ProcessAllFiles"
-           commandId="com.example.helloword.commands.processAllFiles">
+           commandId="org.bxg.spokencompiler.eclipse.commands.processAllFiles">
      </handler>
    </extension>
    <extension
