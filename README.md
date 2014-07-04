@@ -2,7 +2,7 @@ spc-plugin
 ============
 
 This is the Eclipse plugin for the spoken language programming environment
-in Benjamin M. Gordon's PhD dissertation.  
+in Benjamin M. Gordon's PhD dissertation.
 
 # Building
 
@@ -17,10 +17,15 @@ need to copy these files from SPHINX_HOME/lib into lib:
 
 * sphinx4.jar
 * jsapi.jar
+* jsapi-1.0-base.jar
 * WSJ_8gau_13dCep_16k_40mel_130Hz_6800Hz.jar
 
-You will also need a copy of the spc-compiler repository checked out as a
-second project in the same workspace.
+Make sure your copy of the WSJ jar has the /dict/fillerdict file in it.  This
+file was present in Sphinx beta5, but may no longer be there if you build Sphinx
+beta6.
+
+You will also need a copy of the spc-compiler repository checked out as the
+grammar project in the same workspace.
 
 # Running
 
@@ -30,10 +35,14 @@ used it before.
 
 Double-click the META-INF/MANIFEST.MF entry in the Package Explorer, then
 click the green Run arrow in the plugin editor that opens.  This will launch
-a new copy of Eclipse with your plugin loaded.
+a new copy of Eclipse with your plugin loaded.  Once you've done this, a
+normal run configuration is created that will run your plugin without having
+the MANIFEST.MF file open.
 
 The plugin adds a new "Spoken Programming" menu and several corresponding
-toolbar buttons.  To begin dictation, create a file with a .spk extension and
+toolbar buttons.  Before you can begin dictation, you need to add the
+"Spoken Programming" view by going to `Window -> Show View -> Other...`
+and finding it in the list.  Then create a file with a .spk extension and
 click the "start dictation" button while that file is open in an editor.  To
 stop dictation, say "stop listening" or click the "stop dictation" button.
 
