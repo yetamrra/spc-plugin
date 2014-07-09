@@ -84,7 +84,7 @@ public class SpokenBuilder extends IncrementalProjectBuilder
 		SpokenCompiler spc = new SpokenCompiler();
 
     	for ( IPath file: files ) {
-    		monitor.beginTask( "Compiling " + file, 1 );
+    		monitor.beginTask( "Compiling " + file, 3 );
     		
     		if ( checkCancel(monitor) ) {
     			return;
@@ -92,7 +92,13 @@ public class SpokenBuilder extends IncrementalProjectBuilder
     		
     		boolean success = false;
     		try {
-    			spc.compileFile( file.toOSString(), "StringTemplates.stg" );
+    			spc.parseFile( file.toOSString() );
+    			monitor.worked( 1 );
+    			String javaCode = spc.generateCode( "StringTemplates.stg" );
+    			monitor.worked( 1 );
+
+    			// FIXME: Write out to a new .java resource and let Eclipse compile it
+
     			success = true;
     		}
     		catch ( IOException e ) {
