@@ -52,14 +52,7 @@ public class SpokenBuilder extends IncrementalProjectBuilder
 		
 		IResourceDelta delta = getDelta( getProject() );
 		if ( delta != null ) {
-			IResourceDelta[] children = delta.getAffectedChildren();
-			for ( int i=0; i<children.length; i++ ) {
-				IResourceDelta child = children[i];
-				String fileName = child.getFullPath().getFileExtension();
-				if ( fileName != null && fileName.equals("spk") ) {
-					files.add( child.getFullPath() );
-				}
-			}
+			files.addAll(getFiles(delta));
 		}
 		
 		if ( files.size() > 0 ) {
@@ -67,6 +60,26 @@ public class SpokenBuilder extends IncrementalProjectBuilder
 		}
 		
 		return null;
+	}
+
+	private List<IPath> getFiles(IResourceDelta delta)
+	{
+		List<IPath> files = new ArrayList<IPath>();
+
+		IResourceDelta[] children = delta.getAffectedChildren();
+		if ( children.length > 0 ) {
+			for ( int i=0; i<children.length; i++ ) {
+				IResourceDelta child = children[i];
+				files.addAll(getFiles(child));
+			}
+		} else {
+			String extension = delta.getFullPath().getFileExtension();
+			if ( extension != null && extension.equals("spk") ) {
+				files.add( delta.getFullPath() );
+			}
+		}
+
+		return files;
 	}
 
     protected void startupOnInitialize()
