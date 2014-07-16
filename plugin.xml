@@ -157,6 +157,7 @@
       <runtime>
          <run class="org.bxg.spokencompiler.eclipse.builders.SpokenBuilderNature" />
       </runtime>
+      <requires-nature id="org.eclipse.jdt.core.javanature" />
    </extension>
    <extension
          point="org.eclipse.ui.perspectiveExtensions">
