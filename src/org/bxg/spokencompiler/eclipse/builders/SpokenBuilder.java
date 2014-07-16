@@ -27,13 +27,18 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
+import org.bxg.spokencompiler.CompileException;
 import org.bxg.spokencompiler.SpokenCompiler;
 import org.bxg.spokencompiler.eclipse.Activator;
 import org.eclipse.core.resources.ICommand;
+import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IProjectDescription;
 import org.eclipse.core.resources.IResourceDelta;
+import org.eclipse.core.resources.IWorkspace;
+import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.resources.IncrementalProjectBuilder;
+import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -96,6 +101,9 @@ public class SpokenBuilder extends IncrementalProjectBuilder
     {
 		SpokenCompiler spc = new SpokenCompiler();
 
+		IWorkspace w = ResourcesPlugin.getWorkspace();
+		IWorkspaceRoot root = w.getRoot();
+
     	for ( IPath file: files ) {
     		monitor.beginTask( "Compiling " + file, 3 );
     		
@@ -105,7 +113,8 @@ public class SpokenBuilder extends IncrementalProjectBuilder
     		
     		boolean success = false;
     		try {
-    			spc.parseFile( file.toOSString() );
+    			IFile filePath = root.getFile(file);
+    			spc.parseFile( filePath.getRawLocation().toOSString() );
     			monitor.worked( 1 );
     			String javaCode = spc.generateCode( "StringTemplates.stg" );
     			monitor.worked( 1 );
@@ -115,6 +124,9 @@ public class SpokenBuilder extends IncrementalProjectBuilder
     			success = true;
     		}
     		catch ( IOException e ) {
+    			System.out.println( "Error compiling " + file + ": " + e.getMessage() );
+    		}
+    		catch ( CompileException e ) {
     			System.out.println( "Error compiling " + file + ": " + e.getMessage() );
     		}
     		
