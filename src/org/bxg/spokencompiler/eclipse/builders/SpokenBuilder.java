@@ -21,7 +21,10 @@ package org.bxg.spokencompiler.eclipse.builders;
  * If not, see <http://www.gnu.org/licenses/>.
  */
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -34,6 +37,7 @@ import org.eclipse.core.resources.ICommand;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IProjectDescription;
+import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IResourceDelta;
 import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.resources.IWorkspaceRoot;
@@ -113,20 +117,32 @@ public class SpokenBuilder extends IncrementalProjectBuilder
     		
     		boolean success = false;
     		try {
+    			// Generate java code
     			IFile filePath = root.getFile(file);
     			spc.parseFile( filePath.getRawLocation().toOSString() );
     			monitor.worked( 1 );
-    			String javaCode = spc.generateCode( "StringTemplates.stg" );
+    			String javaCode = spc.generateCode( "/SLJavaEmitter.stg" );
     			monitor.worked( 1 );
 
-    			// FIXME: Write out to a new .java resource and let Eclipse compile it
-
+    			// Write out to a new .java resource and let Eclipse compile it
+    			IPath javaPath = file.removeFileExtension().addFileExtension("java");
+    			IFile javaFile = root.getFile(javaPath);
+    			InputStream stream = new ByteArrayInputStream(javaCode.getBytes(StandardCharsets.UTF_8));
+    			if ( !javaFile.exists() ) {
+    				javaFile.create(stream, IResource.FORCE|IResource.DERIVED, monitor);
+    			} else {
+    				javaFile.setContents(stream, IResource.FORCE, monitor);
+    			}
+    			
     			success = true;
     		}
     		catch ( IOException e ) {
     			System.out.println( "Error compiling " + file + ": " + e.getMessage() );
     		}
     		catch ( CompileException e ) {
+    			System.out.println( "Error compiling " + file + ": " + e.getMessage() );
+    		}
+    		catch ( CoreException e ) {
     			System.out.println( "Error compiling " + file + ": " + e.getMessage() );
     		}
     		
