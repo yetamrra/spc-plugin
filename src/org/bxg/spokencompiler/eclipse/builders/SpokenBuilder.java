@@ -57,38 +57,20 @@ public class SpokenBuilder extends IncrementalProjectBuilder
 	protected IProject[] build(int kind, @SuppressWarnings("rawtypes") Map args, IProgressMonitor progress)
 			throws CoreException 
 	{
-		List<IPath> files = new ArrayList<IPath>();
-		
+		BuilderVisitor bv = new BuilderVisitor( getProject() );
 		IResourceDelta delta = getDelta( getProject() );
 		if ( delta != null ) {
-			files.addAll(getFiles(delta));
+			delta.accept(bv);
+		} else {
+			getProject().accept(bv);
 		}
+		List<IPath> files = bv.files();
 		
 		if ( files.size() > 0 ) {
 			buildSpokenFiles( files, progress );
 		}
 		
 		return null;
-	}
-
-	private List<IPath> getFiles(IResourceDelta delta)
-	{
-		List<IPath> files = new ArrayList<IPath>();
-
-		IResourceDelta[] children = delta.getAffectedChildren();
-		if ( children.length > 0 ) {
-			for ( int i=0; i<children.length; i++ ) {
-				IResourceDelta child = children[i];
-				files.addAll(getFiles(child));
-			}
-		} else {
-			String extension = delta.getFullPath().getFileExtension();
-			if ( extension != null && extension.equals("spk") ) {
-				files.add( delta.getFullPath() );
-			}
-		}
-
-		return files;
 	}
 
     protected void startupOnInitialize()
@@ -98,7 +80,41 @@ public class SpokenBuilder extends IncrementalProjectBuilder
    
     protected void clean(IProgressMonitor monitor)
     {
-        // add builder clean logic here
+        IProject project = getProject();
+		BuilderVisitor bv = new BuilderVisitor( project );
+		try {
+			project.accept(bv);
+		}
+		catch (CoreException e) {
+			System.err.println("Caught exception cleaning project: " + e.getMessage());
+		}
+
+		List<IPath> spkFiles = bv.files();
+		if ( spkFiles == null ) {
+			return;
+		}
+
+		IWorkspace w = ResourcesPlugin.getWorkspace();
+		IWorkspaceRoot root = w.getRoot();
+		monitor.beginTask("Cleaning", spkFiles.size());
+		for (IPath file: spkFiles) {
+			if ( checkCancel(monitor) ) {
+				return;
+			}
+
+			IPath javaPath = file.removeFileExtension().addFileExtension("java");
+			IFile javaFile = root.getFile(javaPath);
+			if ( javaFile.exists() ) {
+				try {
+					javaFile.delete(true, monitor);
+				}
+				catch (CoreException e) {
+					System.err.println("Caught exception removing file " + javaFile.getFullPath() + ": " + e.getMessage());
+				}
+			}
+			monitor.worked(1);
+		}
+		monitor.done();
     }
     
     private void buildSpokenFiles( List<IPath> files, IProgressMonitor monitor )
