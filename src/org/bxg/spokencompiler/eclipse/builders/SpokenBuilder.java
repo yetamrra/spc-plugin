@@ -80,7 +80,41 @@ public class SpokenBuilder extends IncrementalProjectBuilder
    
     protected void clean(IProgressMonitor monitor)
     {
-        // add builder clean logic here
+        IProject project = getProject();
+		BuilderVisitor bv = new BuilderVisitor( project );
+		try {
+			project.accept(bv);
+		}
+		catch (CoreException e) {
+			System.err.println("Caught exception cleaning project: " + e.getMessage());
+		}
+
+		List<IPath> spkFiles = bv.files();
+		if ( spkFiles == null ) {
+			return;
+		}
+
+		IWorkspace w = ResourcesPlugin.getWorkspace();
+		IWorkspaceRoot root = w.getRoot();
+		monitor.beginTask("Cleaning", spkFiles.size());
+		for (IPath file: spkFiles) {
+			if ( checkCancel(monitor) ) {
+				return;
+			}
+
+			IPath javaPath = file.removeFileExtension().addFileExtension("java");
+			IFile javaFile = root.getFile(javaPath);
+			if ( javaFile.exists() ) {
+				try {
+					javaFile.delete(true, monitor);
+				}
+				catch (CoreException e) {
+					System.err.println("Caught exception removing file " + javaFile.getFullPath() + ": " + e.getMessage());
+				}
+			}
+			monitor.worked(1);
+		}
+		monitor.done();
     }
     
     private void buildSpokenFiles( List<IPath> files, IProgressMonitor monitor )
