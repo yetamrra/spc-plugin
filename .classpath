@@ -15,9 +15,9 @@
 	<classpathentry kind="var" path="SPHINX_HOME/lib/sphinx4.jar" sourcepath="/SPHINX_HOME/src/sphinx4"/>
 	<classpathentry kind="var" path="SPHINX_HOME/lib/tags.jar"/>
 	<classpathentry kind="var" path="SPHINX_HOME/lib/junit-4.8.1.jar"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/grammar"/>
-	<classpathentry kind="lib" path="/grammar/bin" sourcepath="/grammar/src"/>
-	<classpathentry kind="lib" path="/grammar/lib/antlr-3.5.2-complete.jar"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/spc-compiler"/>
+	<classpathentry kind="lib" path="/spc-compiler/bin" sourcepath="/spc-compiler/src"/>
+	<classpathentry kind="lib" path="/spc-compiler/lib/antlr-3.5.2-complete.jar"/>
 	<classpathentry kind="var" path="SPHINX_HOME/lib/WSJ_8gau_13dCep_16k_40mel_130Hz_6800Hz.jar"/>
 	<classpathentry kind="var" path="SPHINX_HOME/lib/jsapi-1.0-base.jar"/>
 	<classpathentry kind="output" path="bin"/>

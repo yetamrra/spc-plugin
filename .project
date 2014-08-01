@@ -3,7 +3,7 @@
 	<name>EclipsePlugin</name>
 	<comment></comment>
 	<projects>
-		<project>grammar</project>
+		<project>spc-compiler</project>
 	</projects>
 	<buildSpec>
 		<buildCommand>
@@ -50,7 +50,7 @@
 		<link>
 			<name>spc</name>
 			<type>2</type>
-			<locationURI>$%7BWORKSPACE_LOC%7D/grammar/src</locationURI>
+			<locationURI>$%7BWORKSPACE_LOC%7D/spc-compiler/src</locationURI>
 		</link>
 		<link>
 			<name>sphinx4</name>

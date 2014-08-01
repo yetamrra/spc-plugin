@@ -2,9 +2,13 @@ spc-plugin
 ============
 
 This is the Eclipse plugin for the spoken language programming environment
-in Benjamin M. Gordon's PhD dissertation.
+in Benjamin M. Gordon's PhD dissertation.  See the spc-compiler repository
+on github for the matching compiler.
 
 # Building
+
+First, get a copy of the spc-compiler repository from github checked out as the
+spc-compiler project in the same workspace and make sure you can build it.
 
 After cloning the project, you also need to download Sphinx 4 from 
 http://cmusphinx.sourceforge.net/ and unzip and build it somewhere. Make
@@ -24,8 +28,11 @@ Make sure your copy of the WSJ jar has the /dict/fillerdict file in it.  This
 file was present in Sphinx beta5, but may no longer be there if you build Sphinx
 beta6.
 
-You will also need a copy of the spc-compiler repository checked out as the
-grammar project in the same workspace.
+Finally, copy antlr-3.5.2-complete.jar from spc-compiler/lib into lib and use
+the spc.jardesc file in spc-compiler to create spc.jar in lib.
+
+Once you have all this in place, Eclipse should build the plugin without any
+ongoing tweaking.
 
 # Running
 
