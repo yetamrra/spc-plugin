@@ -83,6 +83,7 @@ public class SpokenBuilder extends IncrementalProjectBuilder
     protected void clean(IProgressMonitor monitor)
     {
         IProject project = getProject();
+        deleteSpokenMarkers(project);
 		BuilderVisitor bv = new BuilderVisitor( project );
 		try {
 			project.accept(bv);
