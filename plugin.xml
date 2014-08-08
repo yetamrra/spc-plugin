@@ -196,4 +196,12 @@
             type="java.lang.Object">
       </propertyTester>
    </extension>
+   <extension
+         id="spcProblemMarker"
+         name="Spoken Compiler Problem Marker"
+         point="org.eclipse.core.resources.markers">
+      <super type="org.eclipse.core.resources.problemmarker" />
+      <super type="org.eclipse.core.resources.textmarker" />
+      <persistent value="true" />
+   </extension>
 </plugin>

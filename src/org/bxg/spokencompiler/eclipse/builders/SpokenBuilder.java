@@ -35,6 +35,7 @@ import org.bxg.spokencompiler.SpokenCompiler;
 import org.bxg.spokencompiler.eclipse.Activator;
 import org.eclipse.core.resources.ICommand;
 import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IProjectDescription;
 import org.eclipse.core.resources.IResource;
@@ -50,9 +51,10 @@ import org.eclipse.core.runtime.OperationCanceledException;
 
 public class SpokenBuilder extends IncrementalProjectBuilder
 {
-
 	public static final String BUILDER_ID = Activator.PLUGIN_ID + ".SpokenBuilder";
-	
+
+	private static final String MARKER_ID = Activator.PLUGIN_ID + ".spcProblemMarker";
+
 	@Override
 	protected IProject[] build(int kind, @SuppressWarnings("rawtypes") Map args, IProgressMonitor progress)
 			throws CoreException 
@@ -119,6 +121,12 @@ public class SpokenBuilder extends IncrementalProjectBuilder
     
     private void buildSpokenFiles( List<IPath> files, IProgressMonitor monitor )
     {
+        monitor.beginTask("Compiling spc files", files.size());
+
+        if (!deleteSpokenMarkers(getProject())) {
+            return;
+        }
+
 		SpokenCompiler spc = new SpokenCompiler();
 
 		IWorkspace w = ResourcesPlugin.getWorkspace();
@@ -126,15 +134,15 @@ public class SpokenBuilder extends IncrementalProjectBuilder
 
     	for ( IPath file: files ) {
     		monitor.beginTask( "Compiling " + file, 3 );
-    		
+
     		if ( checkCancel(monitor) ) {
     			return;
     		}
-    		
+
     		boolean success = false;
+            IFile filePath = root.getFile(file);
     		try {
     			// Generate java code
-    			IFile filePath = root.getFile(file);
     			spc.parseFile( filePath.getRawLocation().toOSString() );
     			monitor.worked( 1 );
     			String javaCode = spc.generateCode( "/SLJavaEmitter.stg" );
@@ -156,7 +164,16 @@ public class SpokenBuilder extends IncrementalProjectBuilder
     			System.out.println( "Error compiling " + file + ": " + e.getMessage() );
     		}
     		catch ( CompileException e ) {
-    			System.out.println( "Error compiling " + file + ": " + e.getMessage() );
+    			System.out.println( "Error compiling " + file + ": " + e.getMessage() + " at line " + e.getLine() );
+    			try {
+    				IMarker marker = filePath.createMarker(MARKER_ID);
+    				marker.setAttribute(IMarker.MESSAGE, e.getMessage());
+    				marker.setAttribute(IMarker.LINE_NUMBER, e.getLine());
+    				marker.setAttribute(IMarker.SEVERITY, IMarker.SEVERITY_ERROR);
+    			}
+    			catch ( CoreException e2) {
+    				System.out.println("Caught error while handling compile error: " + e2.getMessage());
+    			}
     		}
     		catch ( CoreException e ) {
     			System.out.println( "Error compiling " + file + ": " + e.getMessage() );
@@ -167,12 +184,28 @@ public class SpokenBuilder extends IncrementalProjectBuilder
     		} else {
     			System.out.println( "Compiled " + file );
     		}
-    		monitor.worked( 1 );
-    		
+    		monitor.worked(1);
+
     		monitor.done();
+
+    		monitor.worked(1);
+    	}
+
+    	monitor.done();
+    }
+
+    public static boolean deleteSpokenMarkers( IProject project )
+    {
+    	try {
+    		project.deleteMarkers( MARKER_ID, false, IResource.DEPTH_INFINITE );
+    		return true;
+    	}
+    	catch (CoreException e) {
+    		System.out.println( "Unable to delete markers: " + e.getMessage() );
+    		return false;
     	}
     }
-    
+
     private boolean checkCancel( IProgressMonitor monitor )
     {
     	if ( monitor.isCanceled() ) {
@@ -185,7 +218,7 @@ public class SpokenBuilder extends IncrementalProjectBuilder
     	
     	return false;
     }
-    
+
     public static void addBuilderToProject( IProject project )
     {
     	// Cannot modify closed projects
