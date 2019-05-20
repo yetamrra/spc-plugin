@@ -20,5 +20,6 @@
 	<classpathentry kind="lib" path="/spc-compiler/lib/antlr-3.5.2-complete.jar"/>
 	<classpathentry kind="var" path="SPHINX_HOME/lib/WSJ_8gau_13dCep_16k_40mel_130Hz_6800Hz.jar"/>
 	<classpathentry kind="var" path="SPHINX_HOME/lib/jsapi-1.0-base.jar"/>
+	<classpathentry kind="var" path="SPHINX_HOME"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
